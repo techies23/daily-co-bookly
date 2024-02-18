@@ -1,0 +1,22 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#daily-co-expiry-countdown {
+    display: none;
+    text-align: center;
+    padding: 10px;
+    background: #d6d6d6;
+    font-size: 14px;
+}
+
+#wpadminbar,
+#ina__dp_logout_message_box{
+    display: none;
+}
+
+iframe {
+    border: none;
+}

@@ -1,0 +1,269 @@
+.daily-co-error-output img {
+    width: 100px;
+    margin: 30px auto;
+}
+
+.daily-co-error-output {
+    text-align: center;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.daily-co-output-room {
+    text-align: center;
+    position: relative;
+    top: 56%;
+}
+
+.dailyco-staff-container .dailyco-staff-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.dailyco-staff-container .dailyco-staff-column:first-child {
+    margin-left: 0;
+}
+
+.dailyco-staff-container .dailyco-staff-column:last-child {
+    margin-right: 0;
+}
+
+.dailyco-staff-container .dailyco-staff-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+    text-align: center;
+    margin: 0 15px;
+}
+
+.dailyco-staff-container .dailyco-staff-column .dailyco-staff-img {
+    margin-bottom: 20px;
+}
+
+.dailyco-btn,
+.headroom-send-invoice-btn,
+.headroom-view-invoice-btn {
+    line-height: 1;
+    background-color: #818a91;
+    padding: 12px 24px;
+    color: #fff;
+    fill: #fff;
+    text-align: center;
+    -webkit-transition: all .3s;
+    -o-transition: all .3s;
+    transition: all .3s;
+}
+
+.headroom-send-invoice-btn:hover,
+.headroom-view-invoice-btn:hover {
+    background: #006566;
+    color: #fff !important;
+}
+
+@media only screen and (max-width: 767px) {
+    .dailyco-staff-container .dailyco-staff-column {
+        flex: auto;
+        margin: 20px 15px;
+    }
+}
+
+.headroombook-member-appointment-modal__content .picker--opened .picker__holder,
+.headroombook-member-appointment-modal__content .picker--opened .picker__holder .picker__frame {
+    position: relative;
+}
+
+/* The Modal (background) */
+.headroombook-member-appointment-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Modal Content/Box */
+.headroombook-member-appointment-modal__content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* The Close Button */
+.headroombook-member-appointment-modal__content--close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.headroombook-member-appointment-modal__content--close:hover,
+.headroombook-member-appointment-modal__content--close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.headroombook-member-appointment-modal .bookly-columnizer .bookly-time-screen {
+    margin-left: 185px;
+}
+
+#leave-meeting {
+    margin: 10px 0;
+    color: #fff;
+    text-transform: capitalize;
+}
+
+.btn-book-memeber-appointment:hover {
+    color: #006566 !important;
+    font-weight: 600 !important;
+    font-size: 17px;
+}
+
+#bookly-tbs .fc .fc-view .fc-event .fc-time .bookly-fc-icon.fa-trash-alt {
+    display: none;
+}
+
+/*Calender fix in individual members page*/
+.um .bookly-therapist-booking-form-daily .picker--opened .picker__holder {
+    position: relative !important;
+    height: 360px !important;
+    margin-top: 10px;
+}
+
+.um .bookly-therapist-booking-form-daily .bookly-time-step {
+    left: 15% !important;
+}
+
+.headroom-consent-signature-wrapper {
+    position: relative;
+    width: 400px;
+    height: 200px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin-bottom: 20px;
+}
+
+.headroom-consent-signature-pad {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 400px;
+    height: 200px;
+    background-color: white;
+    border: 1px solid #ccc;
+}
+
+.headroom-clear-pad,
+.consent-submit-btn {
+    color: #fff;
+}
+
+label {
+    display: inline-block;
+    margin-bottom: .5rem;
+}
+
+.hform-group {
+    margin-bottom: 1rem;
+}
+
+.hform-control {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: 10px;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+input.icd-code-input {
+    margin-bottom: 6px;
+}
+
+input.icd-code-input,
+input.tarfiff-code-input,
+input.manual-price-field {
+    width: 100%;
+    font-size: 14px;
+}
+
+input.icd-code-input::placeholder,
+input.tarfiff-code-input::placeholder,
+input.manual-price-field::placeholder {
+    font-size: 12px;
+}
+
+input#headroom-consent-name::placeholder {
+    font-size: 16px;
+}
+
+.headroom-consent-warpper .hform-group label {
+    padding-bottom: 10px;
+}
+
+.headroom-consent-warpper .hform-group input[type="text"],
+.headroom-consent-warpper .hform-group input[type="email"] {
+    padding: 10px;
+    height: 45px;
+    font-size: 15px;
+}
+
+.headroom-consent-warpper .hform-group input[type="text"]::-webkit-input-placeholder,
+.headroom-consent-warpper .hform-group input[type="email"]::-webkit-input-placeholder,
+.headroom-consent-warpper .hform-group input[type="text"]::-moz-placeholder,
+.headroom-consent-warpper .hform-group input[type="email"]::-moz-placeholder,
+.headroom-consent-warpper .hform-group input[type="text"]::placeholder,
+.headroom-consent-warpper .hform-group input[type="email"]::placeholder {
+    font-size: 15px !important;
+}
+
+#headroom-clear-pad,
+.consent-submit-btn {
+    font-size: 13px;
+    font-weight: 500;
+    text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    fill: #00476F;
+    color: #00476F;
+    background-color: #FCD406;
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: 0px 0px 10px -2px rgba(0, 0, 0, 0.21);
+    padding: 13px 20px 13px 20px;
+    border-color: transparent;
+}
+
+#headroom-clear-pad:hover,
+.consent-submit-btn:hover {
+    background-color: #FFFFFF;
+    color: #00476F;
+}
+
+.daily-co-manual-price-column:last-child {
+    padding: 10px 0;
+}
+
+.headroom-view-invoice-btn,
+.headroom-send-invoice-btn {
+    width: 100%;
+    display: block;
+}

@@ -1,0 +1,17 @@
+{
+    "name": "headroom/dailyco",
+    "description": "Dailyco Integration",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Headroom\\Dailyco\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Deepen Bajracharya",
+            "email": "dpen.connectify@gmail.com"
+        }
+    ],
+    "require": {}
+}
