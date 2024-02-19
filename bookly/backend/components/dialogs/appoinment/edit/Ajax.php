@@ -10,10 +10,10 @@ use Bookly\Lib\Entities\Service;
 use Bookly\Lib\Utils\Common;
 use Bookly\Lib\Utils\DateTime;
 
-remove_all_actions( 'wp_ajax_nopriv_bookly_save_appointment_form' );
-remove_all_actions( 'wp_ajax_bookly_save_appointment_form' );
-add_action( 'wp_ajax_nopriv_bookly_save_appointment_form', array( 'DailyCo_Bookly_Appointment_Edit', 'saveAppointmentForm' ) );
-add_action( 'wp_ajax_bookly_save_appointment_form', array( 'DailyCo_Bookly_Appointment_Edit', 'saveAppointmentForm' ) );
+#remove_all_actions( 'wp_ajax_nopriv_bookly_save_appointment_form' );
+#remove_all_actions( 'wp_ajax_bookly_save_appointment_form' );
+#add_action( 'wp_ajax_nopriv_bookly_save_appointment_form', array( 'DailyCo_Bookly_Appointment_Edit', 'saveAppointmentForm' ) );
+#add_action( 'wp_ajax_bookly_save_appointment_form', array( 'DailyCo_Bookly_Appointment_Edit', 'saveAppointmentForm' ) );
 
 class DailyCo_Bookly_Appointment_Edit extends Lib\Base\Ajax {
 

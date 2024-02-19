@@ -7,7 +7,7 @@
  * Plugin Name:       Integration of daily.co API
  * Plugin URI:        https://www.deepenbajracharya.com.np
  * Description:       Create, moderate rooms via daily.co API
- * Version:           1.0.2
+ * Version:           2.0.0
  * Author:            Deepen Bajracharya
  * Author URI:        https://www.deepenbajracharya.com.np
  * Text Domain:       daily-co-bookly
@@ -32,9 +32,21 @@ function dayily_co_plugin_activation() {
 	if ( ! wp_next_scheduled( 'headroom_invoice_reminder' ) ) {
 		wp_schedule_event( time(), 'weekly', 'headroom_invoice_reminder' );
 	}
+
+	//Migrate DBa
+	\Headroom\Dailyco\Datastore\Migrations::instance()->migrate();
 }
 
 register_deactivation_hook( __FILE__, 'dayily_co_plugin_deactivation' );
 function dayily_co_plugin_deactivation() {
 	wp_clear_scheduled_hook( 'headroom_invoice_reminder' );
 }
+
+//Start Autoloader
+if ( file_exists( DPEN_DAILY_CO_DIR_PATH . 'vendor/autoload.php' ) ) {
+	require DPEN_DAILY_CO_DIR_PATH . 'vendor/autoload.php';
+}
+
+//New Instance
+add_action( 'plugins_loaded', array( 'Headroom\Dailyco\Kernel', 'instance' ), 999999 );
+

@@ -14,8 +14,8 @@ use BooklyPro\Lib\Config;
 class Daily_Co_Bookly_Shortcodes {
 
 	public function __construct() {
-		add_shortcode( 'daily_co_bookly_therapist_list', array( $this, 'show_meeting_therapist' ) );
-		add_shortcode( 'daily_co_bookly_customer_list', array( $this, 'show_meeting_customer' ) );
+		#add_shortcode( 'daily_co_bookly_therapist_list', array( $this, 'show_meeting_therapist' ) );
+		#add_shortcode( 'daily_co_bookly_customer_list', array( $this, 'show_meeting_customer' ) );
 		add_shortcode( 'daily_co_bookly_customer_completed_meetings', array( $this, 'show_meeting_customer_completed' ) );
 		add_shortcode( 'daily_co_bookly_therapist_completed_meetings', array( $this, 'show_meeting_therapist_completed' ) );
 		add_shortcode( 'daily_co_bookly_staffs', array( $this, 'get_staff_list' ) );
@@ -118,7 +118,12 @@ class Daily_Co_Bookly_Shortcodes {
 				foreach ( $appointments as $appointment ) {
 					$staff = Staff::find( $appointment['staff_id'] );
 					if ( ! empty( $staff ) && $staff->getWpUserId() ) {
-						$room_details = get_user_meta( $staff->getWpUserId(), '_daily_co_room_details_' . $appointment['appointment_id'], true );
+						$appt = \Headroom\Dailyco\Datastore\Appointments::instance()->getByUserAppointment( $staff->getWpUserId(), $appointment['appointment_id'] );
+						if ( ! empty( $appt->legacy ) ) {
+							$room_details = $appt;
+						} else {
+							$room_details = json_decode( $appt->value );
+						}
 						?>
                         <tr>
                             <td><?php echo $appointment['service']; ?></td>
@@ -287,10 +292,10 @@ class Daily_Co_Bookly_Shortcodes {
 					$staff = Staff::find( $appointment['staff_id'] );
 					if ( ! empty( $staff ) && $staff->getWpUserId() ) {
 						$room_details = get_user_meta( $staff->getWpUserId(), '_daily_co_room_details_' . $appointment['appointment_id'], true );
-						$extras = !empty( $appointment['extras'] ) ? $appointment['extras'] : false;
-						$ict_codes = false;
+						$extras       = ! empty( $appointment['extras'] ) ? $appointment['extras'] : false;
+						$ict_codes    = false;
 						if ( ! empty( $extras ) ) {
-						    $ict_codes = json_decode( $extras );
+							$ict_codes = json_decode( $extras );
 						}
 						?>
                         <tr>
@@ -298,10 +303,10 @@ class Daily_Co_Bookly_Shortcodes {
                             <td><?php echo date( 'F d, Y h:i a', strtotime( $appointment['start_date'] ) ); ?></td>
                             <td><?php echo $appointment['staff']; ?></td>
                             <td>
-                            	<?php
-                        		if( !empty( $appointment['price'] ) ) {
-                        			echo  \Bookly\Lib\Utils\Price::format( $appointment['price'] );
-                        		} else if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
+								<?php
+								if ( ! empty( $appointment['price'] ) ) {
+									echo \Bookly\Lib\Utils\Price::format( $appointment['price'] );
+								} elseif ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
 									echo \Bookly\Lib\Utils\Price::format( $ict_codes[0]->manual_price );
 								} else {
 									echo "N/A";
@@ -377,13 +382,13 @@ class Daily_Co_Bookly_Shortcodes {
 				if ( ! empty( $appointments ) ) {
 					foreach ( $appointments as $appointment ) {
 						$room_details = get_user_meta( $current_user_id, '_daily_co_room_details_' . $appointment['id'], true );
-						$customApt = \Bookly\Lib\Entities\CustomerAppointment::find( $appointment['ca_id'] );
-						$customer  = \Bookly\Lib\Entities\Customer::find( absint( $appointment['customer_id'] ) );
-						$staff     = Staff::find( $appointment['staff_id'] );
-						$extras    = !empty( $customApt->getExtras() ) ? $customApt->getExtras() : false;
-						$ict_codes = false;
+						$customApt    = \Bookly\Lib\Entities\CustomerAppointment::find( $appointment['ca_id'] );
+						$customer     = \Bookly\Lib\Entities\Customer::find( absint( $appointment['customer_id'] ) );
+						$staff        = Staff::find( $appointment['staff_id'] );
+						$extras       = ! empty( $customApt->getExtras() ) ? $customApt->getExtras() : false;
+						$ict_codes    = false;
 						if ( ! empty( $extras ) ) {
-						    $ict_codes = json_decode( $extras );
+							$ict_codes = json_decode( $extras );
 						}
 						?>
                         <tr>
@@ -391,21 +396,21 @@ class Daily_Co_Bookly_Shortcodes {
                             <td><?php echo date( 'F d, Y h:i a', strtotime( $appointment['start_date'] ) ); ?></td>
                             <td><?php echo $appointment['customer_full_name']; ?></td>
                             <td>
-                        		<?php
-                        		if( !empty($appointment['payment_total']) ) {
-                        			echo  \Bookly\Lib\Utils\Price::format( $appointment['payment_total'] );
-                        		} else if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
+								<?php
+								if ( ! empty( $appointment['payment_total'] ) ) {
+									echo \Bookly\Lib\Utils\Price::format( $appointment['payment_total'] );
+								} elseif ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
 									echo \Bookly\Lib\Utils\Price::format( $ict_codes[0]->manual_price );
 								} else {
 									?>
-									<input type="number" name="manual_price" class="manual-price-field manual-price-field-<?php echo $appointment['id']; ?>" id="manual-price-field-<?php echo $appointment['id']; ?>" placeholder="Manually enter price if any">
+                                    <input type="number" name="manual_price" class="manual-price-field manual-price-field-<?php echo $appointment['id']; ?>" id="manual-price-field-<?php echo $appointment['id']; ?>" placeholder="Manually enter price if any">
 									<?php
 								}
 								?>
                             </td>
 							<?php
 							if ( ! empty( $extras ) ) {
-								if ( !empty($ict_codes) && ! empty( $ict_codes[0]->sent_invoice ) ) {
+								if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->sent_invoice ) ) {
 									?>
                                     <td>
                                         ICD Code: <?php echo ! empty( $ict_codes[0]->ict_code ) ? $ict_codes[0]->ict_code : 'N/A'; ?>

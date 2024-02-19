@@ -44,7 +44,7 @@ class Daily_Co_Bookly_Init {
 
 		if ( $this->is_bookly_active() ) {
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly/frontend/modules/booking/Ajax.php';
-			require DPEN_DAILY_CO_DIR_PATH . 'bookly/woocommerce.php';
+//			require DPEN_DAILY_CO_DIR_PATH . 'bookly/woocommerce.php';
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly/class-bookly-ajax-interceptor.php';
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly/datastore.php';
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly/ultimate-member-configs.php';
