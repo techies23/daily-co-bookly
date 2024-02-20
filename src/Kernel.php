@@ -2,7 +2,7 @@
 
 namespace Headroom\Dailyco;
 
-use Headroom\Dailyco\Bookly\Appointments\Ajax;
+use Headroom\Dailyco\Bookly\Appointments\AppointmentsAjax;
 use Headroom\Dailyco\Shortcodes\UpcomingMeetingList;
 use Headroom\Dailyco\WooCommerce\Woo;
 
@@ -32,8 +32,10 @@ class Kernel {
 		//Shortcodes
 		UpcomingMeetingList::instance();
 
-		//Bookly
-		Ajax::instance();
+		//Bookly Ajax Interceptor
+		if ( is_admin() || is_super_admin() ) {
+			AppointmentsAjax::instance();
+		}
 	}
 
 }

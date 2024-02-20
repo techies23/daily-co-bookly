@@ -59,7 +59,7 @@ class UpcomingMeetingList {
 						?>
                         <tr>
                             <td><?php echo $appointment['service_title']; ?></td>
-                            <td><?php echo date( 'F d, Y h:i a', strtotime( $appointment['start_date'] ) ); ?> (UTC+2)</td>
+                            <td><?php echo date( 'd/m/Y h:i a', strtotime( $appointment['start_date'] ) ); ?> (UTC+2)</td>
                             <td><?php echo $appointment['customer_full_name']; ?></td>
                             <td>
 								<?php if ( ! empty( $room_details ) ) { ?>
@@ -128,7 +128,7 @@ class UpcomingMeetingList {
 						?>
                         <tr>
                             <td><?php echo $appointment['service']; ?></td>
-                            <td><?php echo date( 'F d, Y h:i a', strtotime( $appointment['start_date'] ) ); ?> (UTC+2)</td>
+                            <td><?php echo date( 'd/m/Y h:i a', strtotime( $appointment['start_date'] ) ); ?> (UTC+2)</td>
                             <td><?php echo $appointment['staff']; ?></td>
                             <td>
 								<?php if ( ! empty( $room_details ) && empty( $room_details->error ) ) { ?>

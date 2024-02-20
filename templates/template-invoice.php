@@ -59,9 +59,9 @@
 </head>
 <?php
 if ( ! empty( $extras ) ) {
-    $ict_codes = json_decode( $extras );
+	$ict_codes = json_decode( $extras );
 } else {
-    $ict_codes = false;
+	$ict_codes = false;
 }
 ?>
 <body class="">
@@ -177,6 +177,11 @@ if ( ! empty( $extras ) ) {
                                 </tr>
                                 </thead>
                                 <tbody>
+                                <?php
+                                $backend_price = ! empty( $backend_price ) ? $backend_price : 0;
+                                $total_price   = ! empty( $payment ) ? $payment->getTotal() : $backend_price;
+                                $vat_price     = ! empty( $vat_number ) ? $total_price * 0.15 : 0;
+                                ?>
                                 <tr>
                                     <td>1</td>
                                     <td class="text-left"><?php echo esc_html( date( 'F, y l, g:i a', strtotime( $appointment->getStartDate() ) ) ); ?></td>
@@ -187,16 +192,16 @@ if ( ! empty( $extras ) ) {
 										} else {
 											echo "N/A";
 										}
-                                        ?>
+										?>
                                     </td>
                                     <td class="text-left">
 										<?php
-                                        if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->tariff_code ) ) {
-                                            echo $ict_codes[0]->tariff_code;
-                                        } else {
-                                            echo "N/A";
-                                        }
-                                        ?>
+										if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->tariff_code ) ) {
+											echo $ict_codes[0]->tariff_code;
+										} else {
+											echo "N/A";
+										}
+										?>
                                     </td>
                                     <td>
                                         <p class="mb-1"><strong>Service: </strong> <?php echo esc_html( $service->getTitle() ); ?></p>
@@ -205,31 +210,28 @@ if ( ! empty( $extras ) ) {
                                         <p class="mb-1"><strong>Professional: </strong> <?php echo esc_html( $staff->getFullName() ); ?></p>
                                     </td>
                                     <td class="text-right">R
-                                        <?php
-                                        if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
-                                            echo esc_html( number_format($ict_codes[0]->manual_price, 2) );
-                                        } else {
-                                            echo ! empty( $payment ) ? esc_html( $payment->getTotal() ) : 0;
-                                        }
-                                        ?>
+										<?php
+										if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
+											echo esc_html( number_format( $ict_codes[0]->manual_price, 2 ) );
+										} else {
+											echo esc_html( $total_price );
+										}
+										?>
                                     </td>
                                 </tr>
-								<?php
-								$total_price = ! empty( $payment ) ? $payment->getTotal() : 0;
-								$vat_price   = ! empty( $vat_number ) ? $total_price * 0.15 : 0;
-								?>
+
                                 <tr>
                                     <td colspan="4"></td>
                                     <td class="text-right"><strong>Price excl. VAT</strong></td>
                                     <td class="text-right">
                                         <strong>R
-                                        <?php
-                                        if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
-                                            echo esc_html( number_format($ict_codes[0]->manual_price, 2) );
-                                        } else {
-                                            echo esc_html( $total_price );
-                                        }
-                                        ?>
+											<?php
+											if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
+												echo esc_html( number_format( $ict_codes[0]->manual_price, 2 ) );
+											} else {
+												echo esc_html( $total_price );
+											}
+											?>
                                         </strong>
                                     </td>
                                 </tr>
@@ -238,13 +240,13 @@ if ( ! empty( $extras ) ) {
                                     <td class="text-right"><strong>VAT (15%)</strong></td>
                                     <td class="text-right">
                                         <strong>R
-                                            <?php
-                                            if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
-                                                echo !empty($vat_number) ? esc_html($ict_codes[0]->manual_price) * 0.15 : 0;
-                                            } else {
-                                                echo esc_html( number_format( $vat_price, 2 ) );
-                                            }
-                                            ?>        
+											<?php
+											if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
+												echo ! empty( $vat_number ) ? esc_html( $ict_codes[0]->manual_price ) * 0.15 : 0;
+											} else {
+												echo esc_html( number_format( $vat_price, 2 ) );
+											}
+											?>
                                         </strong>
                                     </td>
                                 </tr>
@@ -252,14 +254,14 @@ if ( ! empty( $extras ) ) {
                                     <td colspan="4"></td>
                                     <td class="text-right"><strong>Total incl. VAT</strong></td>
                                     <td class="text-right"><strong>R
-                                        <?php
-                                        if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
-                                            $vat = !empty($vat_number) ? esc_html($ict_codes[0]->manual_price) * 0.15 : 0;
-                                            echo esc_html( number_format( $ict_codes[0]->manual_price + $vat, 2 ) );
-                                        } else {
-                                            echo esc_html( number_format( $total_price + $vat_price, 2 ) );
-                                        }
-                                        ?>  
+											<?php
+											if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->manual_price ) ) {
+												$vat = ! empty( $vat_number ) ? esc_html( $ict_codes[0]->manual_price ) * 0.15 : 0;
+												echo esc_html( number_format( $ict_codes[0]->manual_price + $vat, 2 ) );
+											} else {
+												echo esc_html( number_format( $total_price + $vat_price, 2 ) );
+											}
+											?>
                                         </strong></td>
                                 </tr>
                                 </tbody>
@@ -268,9 +270,9 @@ if ( ! empty( $extras ) ) {
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <?php if ( isset( $ict_codes ) && !isset( $ict_codes[0]->manual_price ) ) { ?>
+							<?php if ( isset( $ict_codes ) && ! isset( $ict_codes[0]->manual_price ) ) { ?>
                                 <p class="text-center" style="text-decoration: underline;"><strong>This invoice has already been paid.</strong></p>
-                            <?php } ?>
+							<?php } ?>
                             <p class="text-center">
                                 <i>Kindly direct any queries to <a href="mailto:admin@headroom.co.za">admin@headroom.co.za</a></i>
                             </p>

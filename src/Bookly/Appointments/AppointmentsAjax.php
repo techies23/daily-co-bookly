@@ -10,17 +10,26 @@ use Bookly\Lib\Entities\Staff;
 use Headroom\Dailyco\DailyIntegration\Meetings;
 use Headroom\Dailyco\Datastore\Appointments;
 
-class Ajax extends BooklyAjax {
+/**
+ * Ajax interceptor for bookly sessions.
+ */
+class AppointmentsAjax extends BooklyAjax {
+
+	protected static function permissions(): array {
+		return array( '_default' => array( 'staff', 'supervisor' ) );
+	}
 
 	protected function __construct() {
 		if ( wp_doing_ajax() ) {
 			if ( isset( $_POST['action'] ) && $_POST['action'] === "bookly_save_appointment_form" ) {
 				$staff_id       = (int) self::parameter( 'staff_id', 0 );
-				$appointment_id = (int) self::parameter( 'id', 0 );
+				$appointment_id = (int) self::parameter( 'id' );
 				$customers      = json_decode( self::parameter( 'customers', '[]' ), true );
 				$service_id     = (int) self::parameter( 'service_id', - 1 );
 
-				$this->updateRoomDetails( $staff_id, $appointment_id, $customers, $service_id );
+				if ( ! empty( $appointment_id ) ) {
+					$this->updateRoomDetails( $staff_id, $appointment_id, $customers, $service_id );
+				}
 			}
 
 			if ( isset( $_POST['action'] ) && $_POST['action'] === "bookly_delete_customer_appointments" ) {
@@ -102,7 +111,7 @@ class Ajax extends BooklyAjax {
 
 	private static $_instance = null;
 
-	public static function instance(): ?Ajax {
+	public static function instance(): ?AppointmentsAjax {
 		if ( ! isset( self::$_instance ) ) {
 			self::$_instance = new self();
 		}

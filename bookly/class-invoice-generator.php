@@ -35,6 +35,15 @@ class Daily_Co_Bookly_Invoice_Generator {
 				$staff    = \Bookly\Lib\Entities\Staff::find( $appointment->getStaffId() );
 				$category = \Bookly\Lib\Entities\Category::find( $service->getCategoryId() );
 
+				if ( $appointment->getCreatedFrom() === "bookly" || $appointment->getCreatedFrom() === "backend" ) {
+					foreach ( $staff->getServicesData() as $serv ) {
+						if ( $serv['staff_service']->getServiceId() === $appointment->getServiceId() ) {
+							$backend_price = $serv['staff_service']->getPrice();
+							break;
+						}
+					}
+				}
+
 				if ( ! empty( $appointment->getCustomerAppointments() ) ) {
 					foreach ( $appointment->getCustomerAppointments() as $ca ) {
 						$customer = \Bookly\Lib\Entities\Customer::find( $ca->getCustomerId() );
@@ -66,12 +75,12 @@ class Daily_Co_Bookly_Invoice_Generator {
 	public function send_invoice() {
 		check_ajax_referer( '_bookly_public_nonce', 'security' );
 
-		$data        = filter_input( INPUT_POST, 'data', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
-		$apt_id      = isset( $data['aptid'] ) ? absint( $data['aptid'] ) : false;
-		$caid        = isset( $data['caid'] ) ? absint( $data['caid'] ) : false;
-		$payment_id  = isset( $data['paymentid'] ) ? absint( $data['paymentid'] ) : false;
-		$icd_code    = filter_input( INPUT_POST, 'icd' );
-		$tariff_code = filter_input( INPUT_POST, 'tariff_code' );
+		$data         = filter_input( INPUT_POST, 'data', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		$apt_id       = isset( $data['aptid'] ) ? absint( $data['aptid'] ) : false;
+		$caid         = isset( $data['caid'] ) ? absint( $data['caid'] ) : false;
+		$payment_id   = isset( $data['paymentid'] ) ? absint( $data['paymentid'] ) : false;
+		$icd_code     = filter_input( INPUT_POST, 'icd' );
+		$tariff_code  = filter_input( INPUT_POST, 'tariff_code' );
 		$manual_price = filter_input( INPUT_POST, 'manual_price' );
 
 		$customerAppointment = \Bookly\Lib\Entities\CustomerAppointment::find( $caid );

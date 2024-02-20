@@ -51,8 +51,8 @@ class Daily_Co_Bookly_Init {
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly/class-invoice-generator.php';
 
 			if ( is_admin() || is_super_admin() ) {
-				require DPEN_DAILY_CO_DIR_PATH . 'bookly/backend/components/dialogs/appoinment/edit/Ajax.php';
-				require DPEN_DAILY_CO_DIR_PATH . 'bookly/backend/modules/appointments/Ajax.php';
+//				require DPEN_DAILY_CO_DIR_PATH . 'bookly/backend/components/dialogs/appoinment/edit/Ajax.php';
+//				require DPEN_DAILY_CO_DIR_PATH . 'bookly/backend/modules/appointments/Ajax.php';
 
 				#require DPEN_DAILY_CO_DIR_PATH . 'bookly/staff-list.php';
 			}

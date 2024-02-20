@@ -291,7 +291,6 @@ class Daily_Co_Bookly_Shortcodes {
 				foreach ( $appointments as $appointment ) {
 					$staff = Staff::find( $appointment['staff_id'] );
 					if ( ! empty( $staff ) && $staff->getWpUserId() ) {
-						$room_details = get_user_meta( $staff->getWpUserId(), '_daily_co_room_details_' . $appointment['appointment_id'], true );
 						$extras       = ! empty( $appointment['extras'] ) ? $appointment['extras'] : false;
 						$ict_codes    = false;
 						if ( ! empty( $extras ) ) {
@@ -300,7 +299,7 @@ class Daily_Co_Bookly_Shortcodes {
 						?>
                         <tr>
                             <td><?php echo $appointment['service']; ?></td>
-                            <td><?php echo date( 'F d, Y h:i a', strtotime( $appointment['start_date'] ) ); ?></td>
+                            <td><?php echo date( 'd/m/Y h:i a', strtotime( $appointment['start_date'] ) ); ?></td>
                             <td><?php echo $appointment['staff']; ?></td>
                             <td>
 								<?php
