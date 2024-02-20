@@ -94,7 +94,7 @@ if ( ! empty( $extras ) ) {
 								<?php
 								if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->invoice_date ) ) {
 									?>
-                                    <span class="invoice-date">Date: <?php echo $ict_codes[0]->invoice_date; ?></span><br>
+                                    <span class="invoice-date">Date: <?php echo date('d/m/Y', strtotime($ict_codes[0]->invoice_date)); ?></span><br>
 									<?php
 								}
 								?>
@@ -184,7 +184,7 @@ if ( ! empty( $extras ) ) {
                                 ?>
                                 <tr>
                                     <td>1</td>
-                                    <td class="text-left"><?php echo esc_html( date( 'F, y l, g:i a', strtotime( $appointment->getStartDate() ) ) ); ?></td>
+                                    <td class="text-left"><?php echo esc_html( date( 'd/m/Y h:i a', strtotime( $appointment->getStartDate() ) ) ); ?></td>
                                     <td class="text-left">
 										<?php
 										if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->ict_code ) ) {

@@ -14,146 +14,11 @@ use BooklyPro\Lib\Config;
 class Daily_Co_Bookly_Shortcodes {
 
 	public function __construct() {
-		#add_shortcode( 'daily_co_bookly_therapist_list', array( $this, 'show_meeting_therapist' ) );
-		#add_shortcode( 'daily_co_bookly_customer_list', array( $this, 'show_meeting_customer' ) );
 		add_shortcode( 'daily_co_bookly_customer_completed_meetings', array( $this, 'show_meeting_customer_completed' ) );
 		add_shortcode( 'daily_co_bookly_therapist_completed_meetings', array( $this, 'show_meeting_therapist_completed' ) );
 		add_shortcode( 'daily_co_bookly_staffs', array( $this, 'get_staff_list' ) );
 		add_shortcode( 'daily_co_bookly_show_network_stats', array( $this, 'network_stats' ) );
 		#add_shortcode( 'daily_co_bookly_sync_cal', array( $this, 'sync_calendar' ) );
-	}
-
-	public function show_meeting_therapist() {
-		ob_start();
-
-		if ( ! is_user_logged_in() ) {
-			echo "<p>You need to be logged in to view this page.</p>";
-
-			return;
-		}
-
-		$current_user_id = get_current_user_id();
-		$staff_detail    = Daily_Co_Bookly_Datastore::getStaffbyUserID( $current_user_id );
-		$staff           = Staff::find( $staff_detail['id'] );
-		if ( ! empty( $staff ) && (int) $staff->getWpUserId() === $current_user_id ) {
-			?>
-            <h3>Upcoming Professional Meeting List</h3>
-            <table class="widefat fixed striped">
-                <thead>
-                <tr>
-                    <th class="manage-column"><?php esc_html_e( 'Service', 'daily-co-bookly' ); ?></th>
-                    <th class="manage-column"><?php esc_html_e( 'Date', 'daily-co-bookly' ); ?></th>
-                    <th class="manage-column"><?php esc_html_e( 'Client', 'daily-co-bookly' ); ?></th>
-                    <th class="manage-column"><?php esc_html_e( 'Action', 'daily-co-bookly' ); ?></th>
-                    <th class="manage-column"><?php esc_html_e( 'Status', 'daily-co-bookly' ); ?></th>
-                </tr>
-                </thead>
-                <tbody>
-				<?php
-				$appointments = Daily_Co_Bookly_Datastore::get_appointments_by_staff( $staff->getId(), '>=', 'ASC', true );
-				if ( ! empty( $appointments ) ) {
-					foreach ( $appointments as $appointment ) {
-						$ca           = \Bookly\Lib\Entities\CustomerAppointment::find( $appointment['ca_id'] );
-						$start_time   = \Bookly\Lib\Utils\DateTime::applyTimeZoneOffset( $appointment['start_date'], $ca->getTimeZoneOffset() );
-						$room_details = get_user_meta( $current_user_id, '_daily_co_room_details_' . $appointment['id'], true );
-						?>
-                        <tr>
-                            <td><?php echo $appointment['service_title']; ?></td>
-                            <td><?php echo date( 'F d, Y h:i a', strtotime( $appointment['start_date'] ) ); ?> (UTC+2)</td>
-                            <td><?php echo $appointment['customer_full_name']; ?></td>
-                            <td>
-								<?php if ( ! empty( $room_details ) ) { ?>
-                                    <a class="btn btn-bookly-daily" target="_blank" href="<?php echo home_url( '/room/start/?s=' ) . $room_details->name . '&id=' . $current_user_id; ?>">Join</a>
-								<?php } else {
-									echo "N/A";
-								} ?>
-                            </td>
-                            <td><?php echo $appointment['status']; ?></td>
-                        </tr>
-						<?php
-					}
-				} else {
-					?>
-                    <tr>
-                        <td colspan="5">You don't have any upcoming meetings.</td>
-                    </tr>
-					<?php
-				}
-				?>
-                </tbody>
-            </table>
-			<?php
-		} else {
-			echo "<p>Sorry! I could not load your data at the moment, are you a professional ?.</p>";
-		}
-
-		return ob_get_clean();
-	}
-
-	public function show_meeting_customer() {
-		ob_start();
-
-		if ( ! is_user_logged_in() ) {
-			echo "<p>You need to be logged in to view this page.</p>";
-
-			return;
-		}
-		?>
-        <h3>Upcoming Client Meeting List</h3>
-        <table class="widefat fixed striped">
-            <thead>
-            <tr>
-                <th class="manage-column"><?php esc_html_e( 'Service', 'daily-co-bookly' ); ?></th>
-                <th class="manage-column"><?php esc_html_e( 'Date', 'daily-co-bookly' ); ?></th>
-                <th class="manage-column"><?php esc_html_e( 'Professional', 'daily-co-bookly' ); ?></th>
-                <th class="manage-column"><?php esc_html_e( 'Action', 'daily-co-bookly' ); ?></th>
-                <th class="manage-column"><?php esc_html_e( 'Status', 'daily-co-bookly' ); ?></th>
-            </tr>
-            </thead>
-            <tbody>
-			<?php
-			$current_user_id = get_current_user_id();
-			$appointments    = Daily_Co_Bookly_Datastore::get_appointments_by_customer( $current_user_id, '>=', 'ASC', true );
-			if ( ! empty( $appointments ) ) {
-				foreach ( $appointments as $appointment ) {
-					$staff = Staff::find( $appointment['staff_id'] );
-					if ( ! empty( $staff ) && $staff->getWpUserId() ) {
-						$appt = \Headroom\Dailyco\Datastore\Appointments::instance()->getByUserAppointment( $staff->getWpUserId(), $appointment['appointment_id'] );
-						if ( ! empty( $appt->legacy ) ) {
-							$room_details = $appt;
-						} else {
-							$room_details = json_decode( $appt->value );
-						}
-						?>
-                        <tr>
-                            <td><?php echo $appointment['service']; ?></td>
-                            <td><?php echo date( 'F d, Y h:i a', strtotime( $appointment['start_date'] ) ); ?> (UTC+2)</td>
-                            <td><?php echo $appointment['staff']; ?></td>
-                            <td>
-								<?php if ( ! empty( $room_details ) && empty( $room_details->error ) ) { ?>
-                                    <a class="btn btn-bookly-daily" target="_blank" href="<?php echo home_url( '/room/join/?j=' ) . $room_details->name; ?>">Join</a>
-								<?php } else {
-									echo "N/A";
-								} ?>
-                            </td>
-                            <td><?php echo $appointment['appointment_status']; ?></td>
-                        </tr>
-						<?php
-					}
-				}
-			} else {
-				?>
-                <tr>
-                    <td colspan="5">You do not have any upcoming sessions.
-                    </td>
-                </tr>
-				<?php
-			}
-			?>
-            </tbody>
-        </table>
-		<?php
-		return ob_get_clean();
 	}
 
 	/**
@@ -392,7 +257,7 @@ class Daily_Co_Bookly_Shortcodes {
 						?>
                         <tr>
                             <td><?php echo $appointment['service_title']; ?></td>
-                            <td><?php echo date( 'F d, Y h:i a', strtotime( $appointment['start_date'] ) ); ?></td>
+                            <td><?php echo date( 'd/m/Y h:i a', strtotime( $appointment['start_date'] ) ); ?></td>
                             <td><?php echo $appointment['customer_full_name']; ?></td>
                             <td>
 								<?php
