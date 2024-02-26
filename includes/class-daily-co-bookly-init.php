@@ -40,7 +40,8 @@ class Daily_Co_Bookly_Init {
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-shortcodes.php';
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-shortcodes-um.php';
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/ICS.php';
-		require DPEN_DAILY_CO_DIR_PATH . '/includes/class-daily-co-bookly-api-helper.php';
+		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-api-helper.php';
+		require DPEN_DAILY_CO_DIR_PATH . 'includes/hooks.php';
 
 		if ( $this->is_bookly_active() ) {
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly/frontend/modules/booking/Ajax.php';
@@ -59,7 +60,6 @@ class Daily_Co_Bookly_Init {
 		}
 
 		if ( $this->is_bookly_customer_cabinet_active() ) {
-			require DPEN_DAILY_CO_DIR_PATH . 'bookly-addon-customer-cabinet/shortcode-filters.php';
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly-addon-customer-cabinet/reshedule.php';
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly-addon-customer-cabinet/cancel-appointment.php';
 		}

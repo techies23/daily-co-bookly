@@ -250,5 +250,3 @@ class Daily_Co_Bookly_Datastore {
 		return $staff;
 	}
 }
-
-new Daily_Co_Bookly_Datastore();

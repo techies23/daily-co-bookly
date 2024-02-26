@@ -63,10 +63,10 @@ class AppointmentsAjax extends BooklyAjax {
 			$postData['end_date']       = $appointment->getEndDate();
 			$postData['appointment_id'] = $appointment->getId();
 			$postData['service_id']     = $appointment->getServiceId();
-			$postData['service_title']  = $service->getTitle();
+			$postData['service_title']  = !empty($service) ? $service->getTitle() : false;
 			$postData['staff_name']     = $staff->getFullName();
 			$postData['staff_email']    = $staff->getEmail();
-			$postData['order_url']      = false;
+			$postData['order_url'] = false;
 
 			if ( ! empty( $customers ) ) {
 				$customer_detail               = Customer::find( $customers[0]['id'] );

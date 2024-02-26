@@ -50,11 +50,11 @@ class UpcomingMeetingList {
 				$appointments = Daily_Co_Bookly_Datastore::get_appointments_by_staff( $staff->getId(), '>=', 'ASC', true );
 				if ( ! empty( $appointments ) ) {
 					foreach ( $appointments as $appointment ) {
-						$appt = $this->booklyAppointments->getByUserAppointment( $this->current_user_id, $appointment['appointment_id'] );
+						$appt = $this->booklyAppointments->getByUserAppointment( $this->current_user_id, $appointment['id'] );
 						if ( ! empty( $appt->legacy ) ) {
 							$room_details = $appt;
 						} else {
-							$room_details = json_decode( $appt->value );
+							$room_details = ! empty( $appt->value ) ? json_decode( $appt->value ) : false;
 						}
 						?>
                         <tr>

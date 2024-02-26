@@ -36,10 +36,22 @@ class DailyCo_Bookly_CancelAppointment_Ajax extends BooklyLib\Base\Ajax {
 
 					$ca->cancel();
 
-					$room = get_user_meta( $staff->getWpUserId(), '_daily_co_room_name_' . $appointment->getId(), true );
+					$room                = get_user_meta( $staff->getWpUserId(), '_daily_co_room_name_' . $appointment->getId(), true );
+					$dailyCoAppointments = \Headroom\Dailyco\Datastore\Appointments::instance();
+					//Check legacy first
+					if ( empty( $room ) ) {
+						$userAppointment = $dailyCoAppointments->getByUserAppointment( $staff->getWpUserId(), $appointment->getId() );
+						if ( ! empty( $userAppointment ) ) {
+							$room = $userAppointment->name;
+						}
+					}
+
 					//Delete Room
 					$response = dailyco_api()->delete_room( $room );
 					if ( $response->deleted ) {
+						$dailyCoAppointments->delete( $appointment->getId() );
+
+						//Delete legacy
 						delete_user_meta( $staff->getWpUserId(), '_daily_co_room_name_' . $appointment->getId() );
 						delete_user_meta( $staff->getWpUserId(), '_daily_co_room_details_' . $appointment->getId() );
 
