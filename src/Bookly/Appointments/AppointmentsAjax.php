@@ -34,9 +34,13 @@ class AppointmentsAjax extends BooklyAjax {
 
 			if ( isset( $_POST['action'] ) && $_POST['action'] === "bookly_delete_customer_appointments" ) {
 				$ca = (array) self::parameter( 'data', 0 );
-				if ( ! empty( $ca[0]['id'] ) ) {
-					$this->deleteRoom( $ca[0]['id'] );
+				foreach ( $ca as $customerAppointment ) {
+					$this->deleteRoom( $customerAppointment['id'] );
 				}
+
+//				if ( ! empty( $ca[0]['id'] ) ) {
+//					$this->deleteRoom( $ca[0]['id'] );
+//				}
 			}
 		}
 	}
@@ -63,10 +67,10 @@ class AppointmentsAjax extends BooklyAjax {
 			$postData['end_date']       = $appointment->getEndDate();
 			$postData['appointment_id'] = $appointment->getId();
 			$postData['service_id']     = $appointment->getServiceId();
-			$postData['service_title']  = !empty($service) ? $service->getTitle() : false;
+			$postData['service_title']  = ! empty( $service ) ? $service->getTitle() : false;
 			$postData['staff_name']     = $staff->getFullName();
 			$postData['staff_email']    = $staff->getEmail();
-			$postData['order_url'] = false;
+			$postData['order_url']      = false;
 
 			if ( ! empty( $customers ) ) {
 				$customer_detail               = Customer::find( $customers[0]['id'] );
@@ -76,7 +80,7 @@ class AppointmentsAjax extends BooklyAjax {
 
 			$dailyco = $booklyAppointment->getByUserAppointment( $staff->getWpUserId(), $appointment->getId() );
 			if ( ! empty( $dailyco ) ) {
-				Meetings::createMeeting( $postData, 'update', true, $dailyco->name );
+				Meetings::createMeeting( $postData, 'update', true, false, $dailyco->name );
 			} else {
 				Meetings::createMeeting( $postData, 'create', true );
 			}
@@ -96,11 +100,11 @@ class AppointmentsAjax extends BooklyAjax {
 		if ( $staff->getWpUserId() ) {
 			$dailyCoAppointments = Appointments::instance();
 
-			$appointment = $dailyCoAppointments->getByUserAppointment( $staff->getWpUserId(), $appointment->getId() );
-			if ( ! empty( $appointment ) ) {
-				$response = dailyco_api()->delete_room( $appointment->name );
+			$dailyAppointment = $dailyCoAppointments->getByUserAppointment( $staff->getWpUserId(), $appointment->getId() );
+			if ( ! empty( $dailyAppointment ) ) {
+				$response = dailyco_api()->delete_room( $dailyAppointment->name );
 				if ( $response->deleted ) {
-					$dailyCoAppointments->delete( $appointment->id );
+					$dailyCoAppointments->delete( $dailyAppointment->id );
 
 					//Reset Cache
 					dpen_clear_room_cache();

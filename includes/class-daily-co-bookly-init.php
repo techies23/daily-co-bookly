@@ -60,7 +60,7 @@ class Daily_Co_Bookly_Init {
 		}
 
 		if ( $this->is_bookly_customer_cabinet_active() ) {
-			require DPEN_DAILY_CO_DIR_PATH . 'bookly-addon-customer-cabinet/reshedule.php';
+//			require DPEN_DAILY_CO_DIR_PATH . 'bookly-addon-customer-cabinet/reshedule.php';
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly-addon-customer-cabinet/cancel-appointment.php';
 		}
 	}
