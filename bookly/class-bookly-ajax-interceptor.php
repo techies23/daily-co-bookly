@@ -33,9 +33,6 @@ class Daily_Co_Bookly_Ajax_Interceptor {
 				case 'bookly_save_customer':
 					$this->save_um_fields_on_bookly_customer();
 					break;
-				case 'bookly_customer_cabinet_cancel_appointment':
-					DailyCo_Bookly_CancelAppointment_Ajax::cancelAppointment();
-					break;
 			}
 		}
 	}

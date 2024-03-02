@@ -1,9 +1,10 @@
 <?php
 
-/**
- * Class Daily_Co_Bookly_Invoice_Generator
- */
-class Daily_Co_Bookly_Invoice_Generator {
+namespace Headroom\Dailyco\DailyIntegration;
+
+use Headroom\Dailyco\Datastore\BooklyDatastore;
+
+class InvoiceGenerator {
 
 	/**
 	 * Daily_Co_Bookly_Ajax_Interceptor constructor.
@@ -154,7 +155,7 @@ class Daily_Co_Bookly_Invoice_Generator {
 	 * Sent CRON EMAIL PER WEEK for not submitted invoices
 	 */
 	public function cron_reminder_email() {
-		$customerAppointments = Daily_Co_Bookly_Datastore::getLeftOverInvoicesCustomerAppointments();
+		$customerAppointments = BooklyDatastore::getLeftOverInvoicesCustomerAppointments();
 		$sent_staff_ids       = array();
 		if ( ! empty( $customerAppointments ) ) {
 			foreach ( $customerAppointments as $csa ) {
@@ -195,6 +196,14 @@ class Daily_Co_Bookly_Invoice_Generator {
 			}
 		}
 	}
-}
 
-new Daily_Co_Bookly_Invoice_Generator();
+	private static $_instance = null;
+
+	public static function instance(): ?InvoiceGenerator {
+		if ( ! isset( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+
+		return self::$_instance;
+	}
+}

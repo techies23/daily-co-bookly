@@ -3,7 +3,11 @@
 namespace Headroom\Dailyco;
 
 use Headroom\Dailyco\Bookly\Appointments\AppointmentsAjax;
+use Headroom\Dailyco\BooklyCustomerCabinet\Appointments\CancelAppointments;
 use Headroom\Dailyco\BooklyCustomerCabinet\Appointments\RescheduleAppointmentsAjax;
+use Headroom\Dailyco\DailyIntegration\InvoiceGenerator;
+use Headroom\Dailyco\Shortcodes\CompletedMeetingList;
+use Headroom\Dailyco\Shortcodes\UltimateMember;
 use Headroom\Dailyco\Shortcodes\UpcomingMeetingList;
 use Headroom\Dailyco\WooCommerce\Woo;
 
@@ -27,18 +31,26 @@ class Kernel {
 	}
 
 	public function init() {
-		//WooCommerce
-		Woo::instance();
+		if ( is_bookly_active() ) {
+			//WooCommerce
+			Woo::instance();
+			InvoiceGenerator::instance();
 
-		//Shortcodes
-		UpcomingMeetingList::instance();
+			//Shortcodes
+			UpcomingMeetingList::instance();
+			UltimateMember::instance();
+			CompletedMeetingList::instance();
 
-		//Customer Cabinets
-		RescheduleAppointmentsAjax::instance();
+			//Customer Cabinets
+			if ( is_bookly_customer_cabinet_active() ) {
+				RescheduleAppointmentsAjax::instance();
+				CancelAppointments::instance();
+			}
 
-		//Bookly Ajax Interceptor
-		if ( is_admin() || is_super_admin() ) {
-			AppointmentsAjax::instance();
+			//Bookly Ajax Interceptor
+			if ( is_admin() || is_super_admin() ) {
+				AppointmentsAjax::instance();
+			}
 		}
 	}
 

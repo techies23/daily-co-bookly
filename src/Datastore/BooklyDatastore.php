@@ -1,10 +1,10 @@
 <?php
 
-use \Bookly\Lib\Entities\Appointment;
-use \Bookly\Lib\Entities\Customer;
-use Bookly\Lib\Entities\CustomerAppointment;
+namespace Headroom\Dailyco\Datastore;
 
-class Daily_Co_Bookly_Datastore {
+use \Bookly\Lib\Entities\Appointment;
+
+class BooklyDatastore {
 
 	/**
 	 * Get Appointments of staff by id
@@ -56,12 +56,12 @@ class Daily_Co_Bookly_Datastore {
                 p.status     AS payment_status,
                 COALESCE(s.title, a.custom_service_name) AS service_title,
                 (TIME_TO_SEC(TIMEDIFF(a.end_date, a.start_date)) + a.extras_duration) AS service_duration' )
-				            ->leftJoin( 'CustomerAppointment', 'ca', 'a.id = ca.appointment_id' )
-				            ->leftJoin( 'Service', 's', 's.id = a.service_id' )
-				            ->leftJoin( 'Customer', 'c', 'c.id = ca.customer_id' )
-				            ->leftJoin( 'Payment', 'p', 'p.id = ca.payment_id' )
-				            ->leftJoin( 'Staff', 'st', 'st.id = a.staff_id' )
-				            ->leftJoin( 'StaffService', 'ss', 'ss.staff_id = st.id AND ss.service_id = s.id AND ss.location_id = a.location_id' )
+		                    ->leftJoin( 'CustomerAppointment', 'ca', 'a.id = ca.appointment_id' )
+		                    ->leftJoin( 'Service', 's', 's.id = a.service_id' )
+		                    ->leftJoin( 'Customer', 'c', 'c.id = ca.customer_id' )
+		                    ->leftJoin( 'Payment', 'p', 'p.id = ca.payment_id' )
+		                    ->leftJoin( 'Staff', 'st', 'st.id = a.staff_id' )
+		                    ->leftJoin( 'StaffService', 'ss', 'ss.staff_id = st.id AND ss.service_id = s.id AND ss.location_id = a.location_id' )
 		                    ->sortBy( 'start_date' )
 		                    ->order( $order )
 		                    ->whereIn( 'ca.status', \Bookly\Lib\Proxy\CustomStatuses::prepareBusyStatuses( $stats ) );
@@ -162,6 +162,23 @@ class Daily_Co_Bookly_Datastore {
 		return $staff;
 	}
 
+	public static function getLeftOverInvoicesCustomerAppointments() {
+		global $wpdb;
+		$tbl_name     = $wpdb->prefix . 'bookly_customer_appointments';
+		$query        = 'SELECT id, JSON_EXTRACT(extras, "$[0].sent_invoice") AS invoice_sent FROM ' . $tbl_name . ' WHERE JSON_EXTRACT(extras, "$[0].sent_invoice") = true';
+		$sentInvoices = $wpdb->get_results( $query );
+		$exclude      = array();
+		if ( ! empty( $sentInvoices ) ) {
+			foreach ( $sentInvoices as $sentInvoice ) {
+				$exclude[] = $sentInvoice->id;
+			}
+		}
+
+		$notSentInvoicesQuery  = "SELECT * FROM " . $tbl_name . " WHERE id NOT IN ( '" . implode( "', '", $exclude ) . "')";
+		$notSentInvoicesResult = $wpdb->get_results( $notSentInvoicesQuery );
+
+		return $notSentInvoicesResult;
+	}
 
 	public static function getAppointments() {
 		$query = Bookly\Lib\Entities\Appointment::query( 's' );

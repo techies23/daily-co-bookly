@@ -16,6 +16,7 @@ class Appointments extends DatabaseHandler {
 		$legacyData = get_user_meta( $user_id, '_daily_co_room_details_' . $appointment_id, true );
 		if ( ! empty( $legacyData ) ) {
 			$legacyData->legacy = true;
+
 			return $legacyData;
 		}
 
@@ -56,11 +57,73 @@ class Appointments extends DatabaseHandler {
 	}
 
 	public function delete( $id ) {
+		$query = $this->wpdb->prepare(
+			"SELECT * FROM {$this->table_name} WHERE id = %d",
+			$id
+		);
+
+		//Delete Room first
+		$data = $this->wpdb->get_row( $query );
+		if ( ! empty( $data->name ) ) {
+			$response = dailyco_api()->delete_room( $data->name );
+			if ( $response->deleted ) {
+				//Reset Cache
+				dpen_clear_room_cache();
+			}
+		}
+
+		//Delete table entry
 		$this->wpdb->delete(
 			$this->table_name,
 			[ 'id' => $id ]
 		);
 	}
+
+	public function deleteByAppointmentId( $appointment_id ) {
+		$query = $this->wpdb->prepare(
+			"SELECT * FROM {$this->table_name} WHERE appointment_id = %d",
+			$appointment_id
+		);
+
+		//Delete Room first
+		$data = $this->wpdb->get_row( $query );
+		if ( ! empty( $data->name ) ) {
+			$response = dailyco_api()->delete_room( $data->name );
+			if ( $response->deleted ) {
+				//Reset Cache
+				dpen_clear_room_cache();
+			}
+		}
+
+		//Delete table entry
+		$this->wpdb->delete(
+			$this->table_name,
+			[ 'appointment_id' => $appointment_id ]
+		);
+	}
+
+	/**
+	 * Get Customer Appointment based on order_id
+	 *
+	 * @param  int  $order_id
+	 * @param  int  $payment_id
+	 * @param  int  $customer_id
+	 *
+	 * @return string
+	 */
+	public function getMaxCustomerAppointmentsByOrderID( int $order_id, int $payment_id, int $customer_id ): string {
+		$table_name = $this->wpdb->prefix . 'bookly_customer_appointments';
+
+		return $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				"SELECT MAX(appointment_id) FROM {$table_name} WHERE order_id = %d AND payment_id = %d AND customer_id = %d",
+				$order_id,
+				$payment_id,
+				$customer_id
+			)
+		);
+	}
+
 
 	private static $_instance = null;
 

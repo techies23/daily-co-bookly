@@ -24,6 +24,7 @@ define( 'DPEN_DAILY_CO_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DPEN_DAILY_CO_PLUGIN_VERSION', '1.0.12' );
 
 // The main plugin class.
+require DPEN_DAILY_CO_DIR_PATH . 'includes/dependencies.php';
 require_once dirname( __FILE__ ) . '/includes/class-daily-co-bookly-init.php';
 
 add_action( 'plugins_loaded', array( 'Daily_Co_Bookly_Init', 'instance' ), 999999 );

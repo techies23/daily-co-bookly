@@ -38,43 +38,18 @@ class Daily_Co_Bookly_Init {
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-admin.php';
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-fake-page.php';
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-shortcodes.php';
-		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-shortcodes-um.php';
+//		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-shortcodes-um.php';
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/ICS.php';
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-api-helper.php';
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/hooks.php';
 
-		if ( $this->is_bookly_active() ) {
+		if ( is_bookly_active() ) {
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly/frontend/modules/booking/Ajax.php';
-//			require DPEN_DAILY_CO_DIR_PATH . 'bookly/woocommerce.php';
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly/class-bookly-ajax-interceptor.php';
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly/datastore.php';
 			require DPEN_DAILY_CO_DIR_PATH . 'bookly/ultimate-member-configs.php';
-			require DPEN_DAILY_CO_DIR_PATH . 'bookly/class-invoice-generator.php';
-
-			if ( is_admin() || is_super_admin() ) {
-//				require DPEN_DAILY_CO_DIR_PATH . 'bookly/backend/components/dialogs/appoinment/edit/Ajax.php';
-//				require DPEN_DAILY_CO_DIR_PATH . 'bookly/backend/modules/appointments/Ajax.php';
-
-				#require DPEN_DAILY_CO_DIR_PATH . 'bookly/staff-list.php';
-			}
+//			require DPEN_DAILY_CO_DIR_PATH . 'bookly/class-invoice-generator.php';
 		}
-
-		if ( $this->is_bookly_customer_cabinet_active() ) {
-//			require DPEN_DAILY_CO_DIR_PATH . 'bookly-addon-customer-cabinet/reshedule.php';
-			require DPEN_DAILY_CO_DIR_PATH . 'bookly-addon-customer-cabinet/cancel-appointment.php';
-		}
-	}
-
-	public function is_bookly_active() {
-		$active_plugins = (array) get_option( 'active_plugins', array() );
-
-		return in_array( 'bookly-responsive-appointment-booking-tool/main.php', $active_plugins ) || array_key_exists( 'bookly-responsive-appointment-booking-tool/main.php', $active_plugins );
-	}
-
-	public function is_bookly_customer_cabinet_active() {
-		$active_plugins = (array) get_option( 'active_plugins', array() );
-
-		return in_array( 'bookly-addon-customer-cabinet/main.php', $active_plugins ) || array_key_exists( 'bookly-addon-customer-cabinet/main.php', $active_plugins );
 	}
 
 	public function enqueue_scripts() {
