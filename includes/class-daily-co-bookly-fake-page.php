@@ -10,8 +10,8 @@ class Daily_Co_Bookly_Fake_Page {
 	private $version = DPEN_DAILY_CO_PLUGIN_VERSION;
 
 	public function __construct() {
-		add_filter( 'the_posts', array( $this, 'fake_pages' ) );
-		add_filter( 'template_include', array( $this, 'page_template_manipulate' ), 99 );
+		add_filter( 'the_posts', array( $this, 'fake_pages' ), 1 );
+		add_filter( 'template_include', array( $this, 'page_template_manipulate' ), 1 );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'scripts' ) );
 	}
@@ -75,8 +75,8 @@ class Daily_Co_Bookly_Fake_Page {
 			$posts                   = null;
 			$posts[]                 = self::create_fake_page( $fake_page, $fake_pages[ $fake_page ] );
 			$wp_query->is_page       = true;
-			$wp_query->is_singular   = true;
-			$wp_query->is_single     = true;
+			$wp_query->is_singular   = false;
+			$wp_query->is_single     = false;
 			$wp_query->is_home       = false;
 			$wp_query->is_archive    = false;
 			$wp_query->is_category   = false;
@@ -86,14 +86,15 @@ class Daily_Co_Bookly_Fake_Page {
 
 			//Longer permalink structures may not match the fake post slug and cause a 404 error so we catch the error here
 			unset( $wp_query->query["error"] );
-			$wp_query->query_vars["error"]  = "";
-			$wp_query->is_404               = false;
-			$wp_query->is_paged             = false;
-			$wp_query->is_admin             = false;
-			$wp_query->is_preview           = false;
-			$wp_query->is_robots            = false;
-			$wp_query->is_posts_page        = false;
-			$wp_query->is_post_type_archive = false;
+			$wp_query->query_vars["error"]     = "";
+			$wp_query->is_404                  = false;
+			$wp_query->is_paged                = false;
+			$wp_query->is_admin                = false;
+			$wp_query->is_preview              = false;
+			$wp_query->is_robots               = false;
+			$wp_query->is_posts_page           = false;
+			$wp_query->is_post_type_archive    = false;
+			$wp_query->query_vars["post_type"] = "page";
 		}
 
 		return $posts;
@@ -145,7 +146,7 @@ class Daily_Co_Bookly_Fake_Page {
 
 		if ( ! empty( $post ) ) {
 			if ( $post->post_name == 'room/join' ) {
-				wp_enqueue_script( 'daily-api-script', 'https://unpkg.com/@daily-co/daily-js', array('jquery'), $this->version, true );
+				wp_enqueue_script( 'daily-api-script', 'https://unpkg.com/@daily-co/daily-js', array( 'jquery' ), $this->version, true );
 				$room = isset( $_GET['j'] ) ? $_GET['j'] : false;
 				if ( ! empty( $room ) && ! is_user_logged_in() ) {
 					wp_safe_redirect( wp_login_url( $post->guid . '?j=' . $room ) );
@@ -156,7 +157,7 @@ class Daily_Co_Bookly_Fake_Page {
 			}
 
 			if ( $post->post_name == 'room/start' ) {
-				wp_enqueue_script( 'daily-api-script', 'https://unpkg.com/@daily-co/daily-js', array('jquery'), $this->version, true );
+				wp_enqueue_script( 'daily-api-script', 'https://unpkg.com/@daily-co/daily-js', array( 'jquery' ), $this->version, true );
 				$room = isset( $_GET['s'] ) ? $_GET['s'] : false;
 				if ( ! empty( $room ) && ! is_user_logged_in() ) {
 					wp_safe_redirect( wp_login_url( $post->guid . '?s=' . $room ) );

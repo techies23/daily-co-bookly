@@ -103,7 +103,7 @@ jQuery(function ($) {
             }
 
             var image = signaturePad.toDataURL('image/png');
-            $(e.currentTarget).find('.consent-submit-btn').html('Submitting.. Please wait..');
+            $(e.currentTarget).find('.consent-submit-btn').html('Submitting.. Please wait..').attr('disabled', 'disabled');
             var data = $(e.currentTarget).serialize() + '&action=save_consent_form&img=' + image;
             $.post(BooklyL10n.ajaxurl, data).done(function (response) {
                 if (response.success) {

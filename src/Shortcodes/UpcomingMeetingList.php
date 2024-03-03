@@ -50,7 +50,7 @@ class UpcomingMeetingList {
 				$appointments = BooklyDatastore::get_appointments_by_staff( $staff->getId(), '>=', 'ASC', true );
 				if ( ! empty( $appointments ) ) {
 					foreach ( $appointments as $appointment ) {
-						if ( $appointment['appointment_status'] !== "cancelled" ) {
+						if ( $appointment['status'] !== "cancelled" ) {
 							$appt = $this->booklyAppointments->getByUserAppointment( $this->current_user_id, $appointment['id'] );
 							if ( ! empty( $appt->legacy ) ) {
 								$room_details = $appt;

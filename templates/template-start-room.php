@@ -45,7 +45,7 @@ if ( ! empty( $room ) ) {
 } else {
 	echo "<p>Please login into your account first to be able join scheduled video meeting.</p>";
 }
-wp_footer();
+print_footer_scripts();
 ?>
 </body>
 </html>
