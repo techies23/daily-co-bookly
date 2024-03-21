@@ -30,10 +30,10 @@
 		if ( ! empty( $data->data ) ) {
 			foreach ( $data->data as $room ) {
 				if ( $room->api_created ) {
-					$nbf = dpen_daily_co_convert_timezone( array(
-						'date'        => date( 'Y-m-d H:i', $room->config->nbf ),
+					$nbf        = dpen_daily_co_convert_timezone( array(
+						'date' => date( 'Y-m-d H:i', $room->config->nbf ),
 					) );
-					$exp = dpen_daily_co_convert_timezone( array(
+					$exp        = dpen_daily_co_convert_timezone( array(
 						'date' => date( 'Y-m-d H:i', $room->config->exp )
 					) );
 					$created_at = dpen_daily_co_convert_timezone( array(

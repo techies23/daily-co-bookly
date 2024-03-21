@@ -61,7 +61,7 @@ if ( ! function_exists( 'dpen_daily_co_cancel_meeting' ) ) {
 
 if ( ! function_exists( 'dpen_daily_co_prepare_email' ) ) {
 	function dpen_daily_co_prepare_email( $template_name, array $data, $subject, $email, $ics = false ) {
-		$email = trim($email);
+		$email      = trim( $email );
 		$from_email = esc_html( get_option( '_dpen_daily_from_email' ) );
 		$from       = ! empty( $from_email ) ? $from_email : 'no-reply@headroom.co.za';
 
@@ -119,7 +119,7 @@ if ( ! function_exists( 'dpen_daily_co_convert_timezone' ) ) {
 	/**
 	 * Conver timezone according to WordPress GMT offset.
 	 *
-	 * @param array $args
+	 * @param  array  $args
 	 * @param $format
 	 *
 	 * @return DateTime|int
@@ -230,13 +230,8 @@ function daily_co_create_meeting( $postData, $type = 'create', $invoice = false,
  */
 function dpen_daily_co_send_ics_mail_to_client( $postData, $result, $invoice, $reschedule = false ) {
 	//Send Email to customer
-	$apt_notes = ! empty( $postData['appointment_notes'] ) ? $postData['appointment_notes'] : 'N/A';
-
-	if ( ! empty( $postData['timezone_offset'] ) ) {
-		$start_time = \Bookly\Lib\Utils\DateTime::applyTimeZoneOffset( $postData['start_date'], $postData['timezone_offset'] );
-	} else {
-		$start_time = $postData['start_date'];
-	}
+	$apt_notes  = ! empty( $postData['appointment_notes'] ) ? $postData['appointment_notes'] : 'N/A';
+	$start_time = $postData['start_date'];
 
 	$email_data = array(
 		$start_time,
@@ -288,13 +283,8 @@ function dpen_daily_co_send_ics_mail_to_client( $postData, $result, $invoice, $r
  */
 function dpen_daily_co_send_ics_mail_to_therapist( $postData, $result, $reschedule = false ) {
 	//Send email to Staff
-	$apt_notes = ! empty( $postData['appointment_notes'] ) ? $postData['appointment_notes'] : 'N/A';
-
-	if ( ! empty( $postData['timezone_offset'] ) ) {
-		$start_time = \Bookly\Lib\Utils\DateTime::applyTimeZoneOffset( $postData['start_date'], $postData['timezone_offset'] );
-	} else {
-		$start_time = $postData['start_date'];
-	}
+	$apt_notes  = ! empty( $postData['appointment_notes'] ) ? $postData['appointment_notes'] : 'N/A';
+	$start_time = $postData['start_date'];
 
 	$email_data = array(
 		$start_time,

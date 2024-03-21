@@ -5,7 +5,6 @@ namespace Headroom\Dailyco\Shortcodes;
 use Bookly\Lib\Entities\Staff;
 use Headroom\Dailyco\Datastore\Appointments;
 use Headroom\Dailyco\Datastore\BooklyDatastore;
-
 class UpcomingMeetingList {
 
 	protected int $current_user_id;
@@ -131,7 +130,7 @@ class UpcomingMeetingList {
 							?>
                             <tr class="appointment-<?php echo $appointment['appointment_id']; ?>">
                                 <td><?php echo $appointment['service']; ?></td>
-                                <td><?php echo date( 'd/m/Y h:i a', strtotime( $appointment['start_date'] ) ); ?> (UTC+2)</td>
+                                <td><?php echo date( 'd/m/Y h:i a', strtotime( $appointment['start_date'] ) ); ?></td>
                                 <td><?php echo $appointment['staff']; ?></td>
                                 <td>
 									<?php if ( ! empty( $room_details ) && empty( $room_details->error ) ) { ?>
