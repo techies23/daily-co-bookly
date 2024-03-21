@@ -14,7 +14,13 @@ class Appointments extends DatabaseHandler {
 
 	public function getByUserAppointment( $user_id, $appointment_id ) {
 		$legacyData = get_user_meta( $user_id, '_daily_co_room_details_' . $appointment_id, true );
-		if ( ! empty( $legacyData ) ) {
+
+		//Delete this if error
+		if ( ! empty( $legacyData ) && ! empty( $legacyData->error ) ) {
+			delete_user_meta( $user_id, '_daily_co_room_details_' . $appointment_id );
+		}
+
+		if ( ! empty( $legacyData ) && ! isset( $legacyData->error ) ) {
 			$legacyData->legacy = true;
 
 			return $legacyData;

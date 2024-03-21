@@ -2,6 +2,8 @@
 
 namespace Headroom\Dailyco\Shortcodes;
 
+use Headroom\Dailyco\Datastore\BooklyDatastore;
+
 class UltimateMember {
 
 	public function __construct() {
@@ -12,7 +14,7 @@ class UltimateMember {
 		$profile_id = um_profile_id();
 		ob_start();
 		if ( ! empty( $profile_id ) ) {
-			$staff_detail = Daily_Co_Bookly_Datastore::getStaffbyUserID( $profile_id );
+			$staff_detail = BooklyDatastore::getStaffbyUserID( $profile_id );
 			if ( ! empty( $staff_detail ) ) {
 				echo '<div class="bookly-therapist-booking-form-daily">';
 				echo do_shortcode( '[bookly-form category_id="1" staff_member_id="' . $staff_detail['id'] . '" hide="categories,staff_members"]' );

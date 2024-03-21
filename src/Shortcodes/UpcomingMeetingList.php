@@ -129,7 +129,7 @@ class UpcomingMeetingList {
 								$room_details = ! empty( $appt->value ) ? json_decode( $appt->value ) : false;
 							}
 							?>
-                            <tr>
+                            <tr class="appointment-<?php echo $appointment['appointment_id']; ?>">
                                 <td><?php echo $appointment['service']; ?></td>
                                 <td><?php echo date( 'd/m/Y h:i a', strtotime( $appointment['start_date'] ) ); ?> (UTC+2)</td>
                                 <td><?php echo $appointment['staff']; ?></td>
