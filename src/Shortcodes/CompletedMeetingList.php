@@ -207,7 +207,7 @@ class CompletedMeetingList {
 			} else {
 				?>
 				<tr>
-					<td colspan="4">You do not have any upcoming sessions.
+					<td colspan="5">You do not have any upcoming sessions.
 					</td>
 				</tr>
 				<?php
