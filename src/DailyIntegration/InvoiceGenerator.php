@@ -91,6 +91,7 @@ class InvoiceGenerator {
 		$staff_id            = $staff->getWpUserId();
 		$customer            = \Bookly\Lib\Entities\Customer::find( $customer_id );
 		$wp_customer_id      = $customer->getWpUserId();
+		$payment_id = ! empty( $payment_id ) ? $payment_id : $appointment->getId();
 
 		$extras = array();
 		if ( ! empty( $icd_code ) ) {

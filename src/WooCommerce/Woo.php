@@ -49,6 +49,7 @@ class Woo {
 							$postData['customer_fullname'] = $wc_item['full_name'];
 							$postData['order_url']         = $order->get_checkout_order_received_url();
 							$postData['appointment_notes'] = $ca->getNotes();
+							$postData['timezone']          = $ca->getTimeZone();
 							$postData['timezone_offset']   = $ca->getTimeZoneOffset();
 
 							$appointment = $this->appointments->getByUserAppointment( $staff->getWpUserId(), $appointment->getId() );

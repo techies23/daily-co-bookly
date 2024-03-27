@@ -37,12 +37,12 @@ class CompletedMeetingList {
 			<table class="widefat fixed striped">
 				<thead>
 				<tr>
-					<th class="manage-column"><?php esc_html_e( 'Service', 'daily-co-bookly' ); ?></th>
-					<th class="manage-column"><?php esc_html_e( 'Date', 'daily-co-bookly' ); ?></th>
-					<th class="manage-column"><?php esc_html_e( 'Client', 'daily-co-bookly' ); ?></th>
-					<th class="manage-column"><?php esc_html_e( 'Price', 'daily-co-bookly' ); ?></th>
-					<th class="manage-column"><?php esc_html_e( 'ICD Code', 'daily-co-bookly' ); ?></th>
-					<th class="manage-column"><?php esc_html_e( 'Invoice', 'daily-co-bookly' ); ?></th>
+					<th style="text-align:left;"><?php esc_html_e( 'Service', 'daily-co-bookly' ); ?></th>
+					<th style="text-align:left;"><?php esc_html_e( 'Date', 'daily-co-bookly' ); ?></th>
+					<th style="text-align:left;"><?php esc_html_e( 'Client', 'daily-co-bookly' ); ?></th>
+					<th style="text-align:left;"><?php esc_html_e( 'Price', 'daily-co-bookly' ); ?></th>
+					<th style="text-align:left;"><?php esc_html_e( 'ICD Code', 'daily-co-bookly' ); ?></th>
+					<th style="text-align:left;"><?php esc_html_e( 'Invoice', 'daily-co-bookly' ); ?></th>
 				</tr>
 				</thead>
 				<tbody>
@@ -148,11 +148,11 @@ class CompletedMeetingList {
 		<table class="widefat fixed striped">
 			<thead>
 			<tr>
-				<th class="manage-column"><?php esc_html_e( 'Service', 'daily-co-bookly' ); ?></th>
-				<th class="manage-column"><?php esc_html_e( 'Date', 'daily-co-bookly' ); ?></th>
-				<th class="manage-column"><?php esc_html_e( 'Professional', 'daily-co-bookly' ); ?></th>
-				<th class="manage-column"><?php esc_html_e( 'Price', 'daily-co-bookly' ); ?></th>
-				<th class="manage-column"><?php esc_html_e( 'Invoice', 'daily-co-bookly' ); ?></th>
+				<th style="text-align:left;"><?php esc_html_e( 'Service', 'daily-co-bookly' ); ?></th>
+				<th style="text-align:left;"><?php esc_html_e( 'Date', 'daily-co-bookly' ); ?></th>
+				<th style="text-align:left;"><?php esc_html_e( 'Professional', 'daily-co-bookly' ); ?></th>
+				<th style="text-align:left;"><?php esc_html_e( 'Price', 'daily-co-bookly' ); ?></th>
+				<th style="text-align:left;"><?php esc_html_e( 'Invoice', 'daily-co-bookly' ); ?></th>
 			</tr>
 			</thead>
 			<tbody>

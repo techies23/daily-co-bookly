@@ -5,6 +5,7 @@ namespace Headroom\Dailyco\Shortcodes;
 use Bookly\Lib\Entities\Staff;
 use Headroom\Dailyco\Datastore\Appointments;
 use Headroom\Dailyco\Datastore\BooklyDatastore;
+
 class UpcomingMeetingList {
 
 	protected int $current_user_id;
@@ -37,11 +38,11 @@ class UpcomingMeetingList {
             <table class="widefat fixed striped">
                 <thead>
                 <tr>
-                    <th class="manage-column"><?php esc_html_e( 'Service', 'daily-co-bookly' ); ?></th>
-                    <th class="manage-column"><?php esc_html_e( 'Date', 'daily-co-bookly' ); ?></th>
-                    <th class="manage-column"><?php esc_html_e( 'Client', 'daily-co-bookly' ); ?></th>
-                    <th class="manage-column"><?php esc_html_e( 'Action', 'daily-co-bookly' ); ?></th>
-                    <th class="manage-column"><?php esc_html_e( 'Status', 'daily-co-bookly' ); ?></th>
+                    <th style="text-align:left;"><?php esc_html_e( 'Service', 'daily-co-bookly' ); ?></th>
+                    <th style="text-align:left;"><?php esc_html_e( 'Date', 'daily-co-bookly' ); ?></th>
+                    <th style="text-align:left;"><?php esc_html_e( 'Client', 'daily-co-bookly' ); ?></th>
+                    <th style="text-align:left;"><?php esc_html_e( 'Action', 'daily-co-bookly' ); ?></th>
+                    <th style="text-align:left;"><?php esc_html_e( 'Status', 'daily-co-bookly' ); ?></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,6 +50,11 @@ class UpcomingMeetingList {
 				$appointments = BooklyDatastore::get_appointments_by_staff( $staff->getId(), '>=', 'ASC', true );
 				if ( ! empty( $appointments ) ) {
 					foreach ( $appointments as $appointment ) {
+						$start_time = dpen_daily_co_convert_timezone( array(
+							'date'     => $appointment['start_date'],
+							'timezone' => 'Africa/Johannesburg',
+						), 'd/m/Y h:i a' );
+
 						if ( $appointment['status'] !== "cancelled" ) {
 							$appt = $this->booklyAppointments->getByUserAppointment( $this->current_user_id, $appointment['id'] );
 							if ( ! empty( $appt->legacy ) ) {
@@ -59,7 +65,7 @@ class UpcomingMeetingList {
 							?>
                             <tr>
                                 <td><?php echo $appointment['service_title']; ?></td>
-                                <td><?php echo date( 'd/m/Y h:i a', strtotime( $appointment['start_date'] ) ); ?> (UTC+2)</td>
+                                <td><?php echo $start_time; ?></td>
                                 <td><?php echo $appointment['customer_full_name']; ?></td>
                                 <td>
 									<?php if ( ! empty( $room_details ) ) { ?>
@@ -105,11 +111,11 @@ class UpcomingMeetingList {
         <table class="widefat fixed striped">
             <thead>
             <tr>
-                <th class="manage-column"><?php esc_html_e( 'Service', 'daily-co-bookly' ); ?></th>
-                <th class="manage-column"><?php esc_html_e( 'Date', 'daily-co-bookly' ); ?></th>
-                <th class="manage-column"><?php esc_html_e( 'Professional', 'daily-co-bookly' ); ?></th>
-                <th class="manage-column"><?php esc_html_e( 'Action', 'daily-co-bookly' ); ?></th>
-                <th class="manage-column"><?php esc_html_e( 'Status', 'daily-co-bookly' ); ?></th>
+                <th style="text-align:left;"><?php esc_html_e( 'Service', 'daily-co-bookly' ); ?></th>
+                <th style="text-align:left;"><?php esc_html_e( 'Date', 'daily-co-bookly' ); ?></th>
+                <th style="text-align:left;"><?php esc_html_e( 'Professional', 'daily-co-bookly' ); ?></th>
+                <th style="text-align:left;"><?php esc_html_e( 'Action', 'daily-co-bookly' ); ?></th>
+                <th style="text-align:left;"><?php esc_html_e( 'Status', 'daily-co-bookly' ); ?></th>
             </tr>
             </thead>
             <tbody>
@@ -118,6 +124,11 @@ class UpcomingMeetingList {
 			$appointments          = BooklyDatastore::get_appointments_by_customer( $this->current_user_id, '>=', 'ASC', true );
 			if ( ! empty( $appointments ) ) {
 				foreach ( $appointments as $appointment ) {
+					$start_time = dpen_daily_co_convert_timezone( array(
+						'date'     => $appointment['start_date'],
+						'timezone' => $appointment['timezone'],
+					), 'd/m/Y h:i a' );
+
 					if ( $appointment['appointment_status'] !== "cancelled" ) {
 						$staff = Staff::find( $appointment['staff_id'] );
 						if ( ! empty( $staff ) && $staff->getWpUserId() ) {
@@ -130,7 +141,7 @@ class UpcomingMeetingList {
 							?>
                             <tr class="appointment-<?php echo $appointment['appointment_id']; ?>">
                                 <td><?php echo $appointment['service']; ?></td>
-                                <td><?php echo date( 'd/m/Y h:i a', strtotime( $appointment['start_date'] ) ); ?></td>
+                                <td><?php echo $start_time; ?></td>
                                 <td><?php echo $appointment['staff']; ?></td>
                                 <td>
 									<?php if ( ! empty( $room_details ) && empty( $room_details->error ) ) { ?>

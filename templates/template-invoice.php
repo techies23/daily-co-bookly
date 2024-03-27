@@ -90,7 +90,7 @@ if ( ! empty( $extras ) ) {
                     <div class="row">
                         <div class="col-md-12 text-md-right">
                             <address>
-                                <span class="invoiceNumber">Invoice Number: #<?php echo ! empty( $payment ) ? $payment->getId() : 'N/A'; ?></span><br>
+                                <span class="invoiceNumber">Invoice Number: #<?php echo ! empty( $payment ) ? $payment->getId() : $appointment->getId(); ?></span><br>
 								<?php
 								if ( ! empty( $ict_codes ) && ! empty( $ict_codes[0]->invoice_date ) ) {
 									?>

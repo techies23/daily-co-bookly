@@ -231,7 +231,15 @@ function daily_co_create_meeting( $postData, $type = 'create', $invoice = false,
 function dpen_daily_co_send_ics_mail_to_client( $postData, $result, $invoice, $reschedule = false ) {
 	//Send Email to customer
 	$apt_notes  = ! empty( $postData['appointment_notes'] ) ? $postData['appointment_notes'] : 'N/A';
-	$start_time = $postData['start_date'];
+	$start_time = dpen_daily_co_convert_timezone( array(
+		'date'     => $postData['start_date'],
+		'timezone' => ! empty( $postData['timezone'] ) ? $postData['timezone'] : 'UTC+2',
+	), 'd/m/Y h:i a' );
+
+	$end_time = dpen_daily_co_convert_timezone( array(
+		'date'     => $postData['end_date'],
+		'timezone' => ! empty( $postData['timezone'] ) ? $postData['timezone'] : 'UTC+2',
+	), 'd/m/Y h:i a' );
 
 	$email_data = array(
 		$start_time,
@@ -254,16 +262,8 @@ function dpen_daily_co_send_ics_mail_to_client( $postData, $result, $invoice, $r
 	$customer_ics = array(
 		'location'    => home_url( '/room/join/?j=' ) . $result->name,
 		'description' => $description_invite,
-		'dtstart'     => dpen_daily_co_convert_timezone( array(
-			'date'      => $postData['start_date'],
-			'timezone'  => 'UTC',
-			'timestamp' => true
-		), 'Y-m-d h:i a' ),
-		'dtend'       => dpen_daily_co_convert_timezone( array(
-			'date'      => $postData['end_date'],
-			'timezone'  => 'UTC',
-			'timestamp' => true
-		), 'Y-m-d h:i a' ),
+		'dtstart'     => $start_time,
+		'dtend'       => $end_time,
 		'organizer'   => $postData['staff_name'],
 		'summary'     => 'Online Consultation | Headroom'
 	);

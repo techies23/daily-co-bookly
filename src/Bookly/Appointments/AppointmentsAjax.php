@@ -76,6 +76,7 @@ class AppointmentsAjax extends BooklyAjax {
 				$customer_detail               = Customer::find( $customers[0]['id'] );
 				$postData['customer_email']    = $customer_detail->getEmail();
 				$postData['customer_fullname'] = $customer_detail->getFullName();
+				$postData['timezone']          = ! empty( $customers[0]['timezone'] ) ? $customers[0]['timezone'] : '';
 			}
 
 			$dailyco = $booklyAppointment->getByUserAppointment( $staff->getWpUserId(), $appointment->getId() );
