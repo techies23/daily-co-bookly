@@ -54,7 +54,7 @@ class Woo {
 
 							$appointment = $this->appointments->getByUserAppointment( $staff->getWpUserId(), $appointment->getId() );
 							if ( ! empty( $appointment ) ) {
-								Meetings::createMeeting( $postData, 'update', true, $appointment->name );
+								Meetings::createMeeting( $postData, 'update', true, false, $appointment->name );
 							} else {
 								Meetings::createMeeting( $postData, 'create', true );
 							}

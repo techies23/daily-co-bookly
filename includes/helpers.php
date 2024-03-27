@@ -35,32 +35,6 @@ if ( ! function_exists( 'dpen_clear_room_cache' ) ) {
 	}
 }
 
-if ( ! function_exists( 'dpen_daily_co_cancel_meeting' ) ) {
-	function dpen_daily_co_cancel_meeting( $args = array() ) {
-		$client_email_data = array(
-			$args['start_time'],
-			$args['service_title'],
-			false,
-			false,
-			false,
-			$args['staff_name']
-		);
-
-		\Headroom\Dailyco\DailyIntegration\Email::prepareEmail( 'tpl-email-cancelled-client', $client_email_data, "Online Consultation | Headroom", $args['customer_email'] );
-
-		//Send Cancellation to Therapist
-		$therapist_email_data = array(
-			date( 'Y-m-d H:i', strtotime( $args['start_time'] ) ),
-			$args['service_title'],
-			false,
-			$args['customer_name'],
-			$args['customer_email']
-		);
-
-		\Headroom\Dailyco\DailyIntegration\Email::prepareEmail( 'tpl-email-cancelled-therapist', $therapist_email_data, "Online Consultation | Headroom", $args['staff_email'] );
-	}
-}
-
 if ( ! function_exists( 'dpen_daily_co_convert_timezone' ) ) {
 	/**
 	 * Conver timezone according to WordPress GMT offset.

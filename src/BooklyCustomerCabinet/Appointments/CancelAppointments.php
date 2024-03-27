@@ -8,6 +8,7 @@ use Bookly\Lib\Entities\Customer;
 use Bookly\Lib\Entities\CustomerAppointment;
 use Bookly\Lib\Entities\Service;
 use Bookly\Lib\Entities\Staff;
+use Headroom\Dailyco\DailyIntegration\Email;
 use Headroom\Dailyco\Datastore\Appointments;
 
 class CancelAppointments extends BooklyAjax {
@@ -32,13 +33,14 @@ class CancelAppointments extends BooklyAjax {
 				$staff   = Staff::find( $appointment->getStaffId() );
 
 				//Send cancellation email as well
-				dpen_daily_co_cancel_meeting( [
+				Email::cancelAppointment( [
 					'start_time'     => $appointment->getStartDate(),
 					'service_title'  => $service->getTitle(),
 					'staff_name'     => $staff->getFullName(),
 					'customer_email' => $customer->getEmail(),
 					'customer_name'  => $customer->getFullName(),
-					'staff_email'    => $staff->getEmail()
+					'staff_email'    => $staff->getEmail(),
+					'timezone'       => $ca->getTimeZone()
 				] );
 
 				$room                = get_user_meta( $staff->getWpUserId(), '_daily_co_room_name_' . $appointment->getId(), true );

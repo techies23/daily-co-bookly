@@ -4,9 +4,9 @@ namespace Headroom\Dailyco\DailyIntegration;
 
 class Email {
 
-	private static $defaultTimezone = 'Africa/Johannesburg';
+	private static string $defaultTimezone = 'Africa/Johannesburg';
 
-	public static function prepareEmail( $template_name, array $data, $subject, $email, $ics = false, array $postData = [] ) {
+	public static function prepareEmail( $template_name, array $data, $subject, $email, $ics = false ) {
 		$from_email = esc_html( get_option( '_dpen_daily_from_email' ) );
 		$from       = ! empty( $from_email ) ? $from_email : 'no-reply@headroom.co.za';
 
@@ -15,7 +15,6 @@ class Email {
 		$headers[]      = 'From: ' . get_bloginfo( 'name' ) . ' < ' . $from . ' >' . "\r\n";
 		$email_template = file_get_contents( DPEN_DAILY_CO_DIR_PATH . 'templates/emails/' . $template_name . '.html' );
 
-		$timezone       = ! empty( $postData['timezone'] ) ? $postData['timezone'] : 'Africa/Johannesburg';
 		$search_strings = array(
 			'{site_title}',
 			'{site_url}',
@@ -75,6 +74,7 @@ class Email {
 		//Send Email to customer
 		$apt_notes  = ! empty( $postData['appointment_notes'] ) ? $postData['appointment_notes'] : 'N/A';
 		$timezone   = ! empty( $postData['timezone'] ) ? $postData['timezone'] : self::$defaultTimezone;
+		$name       = ! empty( $result->name ) ? $result->name : 'Online Appointment';
 		$start_time = dpen_daily_co_convert_timezone( array(
 			'date'     => $postData['start_date'],
 			'timezone' => $timezone,
@@ -88,7 +88,7 @@ class Email {
 		$email_data = array(
 			$start_time,
 			$postData['service_title'],
-			home_url( '/room/join/?j=' ) . $result->name,
+			home_url( '/room/join/?j=' ) . $name,
 			false,
 			false,
 			$apt_notes,
@@ -98,13 +98,13 @@ class Email {
 
 		if ( ! $reschedule ) {
 			$invoice            = ! empty( $invoice ) ? 'Payment notification: ' . $postData['order_url'] : '';
-			$description_invite = 'Hello\n\n,You have successfully booked a session with ' . $postData['staff_name'] . '. Please find below session details and a link to join the virtual room at booked time.\nService: ' . $postData['service_title'] . '\nStarting at: ' . $start_time . '\n' . $invoice . '\n\nInstructions:\n\nBefore joining the meeting, you will need to log in to our system. Please allow sufficient time to go through the login process before the session start time. We strongly recommend using the Chrome browser for the best video quality. If you are experiencing some granularity in the initial images, allow a 1-2 minutes for the connection to stabilise. Also please be aware that the virtual room will close automatically at the session end time. A countdown timer is visible to assist you and the therapist to bring the session to a timely end before the virtual room closes\n\n' . home_url( '/room/join/?j=' ) . $result->name;
+			$description_invite = 'Hello\n\n,You have successfully booked a session with ' . $postData['staff_name'] . '. Please find below session details and a link to join the virtual room at booked time.\nService: ' . $postData['service_title'] . '\nStarting at: ' . $start_time . '\n' . $invoice . '\n\nInstructions:\n\nBefore joining the meeting, you will need to log in to our system. Please allow sufficient time to go through the login process before the session start time. We strongly recommend using the Chrome browser for the best video quality. If you are experiencing some granularity in the initial images, allow a 1-2 minutes for the connection to stabilise. Also please be aware that the virtual room will close automatically at the session end time. A countdown timer is visible to assist you and the therapist to bring the session to a timely end before the virtual room closes\n\n' . home_url( '/room/join/?j=' ) . $name;
 		} else {
-			$description_invite = 'Hello\n\n,Your session with therapist ' . $postData['staff_name'] . ' has been re-scheduled. Please find below session details and a link to join the virtual room at booked time.\nService: ' . $postData['service_title'] . '\nStarting at: ' . $start_time . '\n\nInstructions:\n\nBefore joining the meeting, you will need to log in to our system. Please allow sufficient time to go through the login process before the session start time. We strongly recommend using the Chrome browser for the best video quality. If you are experiencing some granularity in the initial images, allow a 1-2 minutes for the connection to stabilise. Also please be aware that the virtual room will close automatically at the session end time. A countdown timer is visible to assist you and the therapist to bring the session to a timely end before the virtual room closes.\n\n' . home_url( '/room/join/?j=' ) . $result->name;
+			$description_invite = 'Hello\n\n,Your session with therapist ' . $postData['staff_name'] . ' has been re-scheduled. Please find below session details and a link to join the virtual room at booked time.\nService: ' . $postData['service_title'] . '\nStarting at: ' . $start_time . '\n\nInstructions:\n\nBefore joining the meeting, you will need to log in to our system. Please allow sufficient time to go through the login process before the session start time. We strongly recommend using the Chrome browser for the best video quality. If you are experiencing some granularity in the initial images, allow a 1-2 minutes for the connection to stabilise. Also please be aware that the virtual room will close automatically at the session end time. A countdown timer is visible to assist you and the therapist to bring the session to a timely end before the virtual room closes.\n\n' . home_url( '/room/join/?j=' ) . $name;
 		}
 
 		$customer_ics = array(
-			'location'    => home_url( '/room/join/?j=' ) . $result->name,
+			'location'    => home_url( '/room/join/?j=' ) . $name,
 			'description' => $description_invite,
 			'dtstart'     => $start_time,
 			'dtend'       => $end_time,
@@ -115,7 +115,7 @@ class Email {
 
 		$email_tpl = ! $reschedule ? 'tpl-email-invite' : 'tpl-email-invite-updated';
 
-		self::prepareEmail( $email_tpl, $email_data, "Online Consultation | Headroom", $postData['customer_email'], $customer_ics, $postData );
+		self::prepareEmail( $email_tpl, $email_data, "Online Consultation | Headroom", $postData['customer_email'], $customer_ics );
 	}
 
 	/**
@@ -132,24 +132,25 @@ class Email {
 		//Send email to Staff
 		$apt_notes  = ! empty( $postData['appointment_notes'] ) ? $postData['appointment_notes'] : 'N/A';
 		$start_time = $postData['start_date'];
+		$name       = ! empty( $result->name ) ? $result->name : 'Online Appointment';
 
 		$email_data = array(
 			$start_time,
 			$postData['service_title'],
-			home_url( '/room/start/?s=' ) . $result->name,
+			home_url( '/room/start/?s=' ) . $name,
 			$postData['customer_fullname'],
 			$postData['customer_email'],
 			$apt_notes
 		);
 
 		if ( ! $reschedule ) {
-			$description_start = 'Hello,\n\nYou have a new booking from ' . $postData['customer_fullname'] . ' ( ' . $postData['customer_email'] . ' ). Please find below the session details and the link to open the virtual room at the booked time.\n\nService: ' . $postData['service_title'] . '\nStarting at: ' . $start_time . '\nClient Name: ' . $postData['customer_fullname'] . '\nClient Email: ' . $postData['customer_email'] . '\n\nInstructions:\n\nYou will need to log in to our system to initiate the meeting. Please allow sufficient time to go through the login process before the session starts. We strongly recommend using the Chrome browser for the best video quality.\n\nIf you are experiencing some granularity in the initial images, allow a 1-2 minutes for the connection to stabilise. Also please be aware that the virtual room will close automatically at the session end time. A countdown timer is visible to assist you and the client to bring the session to a timely end before the virtual room closes.\n\n' . home_url( '/room/start/?s=' ) . $result->name;
+			$description_start = 'Hello,\n\nYou have a new booking from ' . $postData['customer_fullname'] . ' ( ' . $postData['customer_email'] . ' ). Please find below the session details and the link to open the virtual room at the booked time.\n\nService: ' . $postData['service_title'] . '\nStarting at: ' . $start_time . '\nClient Name: ' . $postData['customer_fullname'] . '\nClient Email: ' . $postData['customer_email'] . '\n\nInstructions:\n\nYou will need to log in to our system to initiate the meeting. Please allow sufficient time to go through the login process before the session starts. We strongly recommend using the Chrome browser for the best video quality.\n\nIf you are experiencing some granularity in the initial images, allow a 1-2 minutes for the connection to stabilise. Also please be aware that the virtual room will close automatically at the session end time. A countdown timer is visible to assist you and the client to bring the session to a timely end before the virtual room closes.\n\n' . home_url( '/room/start/?s=' ) . $name;
 		} else {
-			$description_start = 'Hello,\n\nYour session with client ' . $postData['customer_fullname'] . ' ( ' . $postData['customer_email'] . ' ) has been re-scheduled. Please find below the session details and the link to open the virtual room at the booked time.\n\nService: ' . $postData['service_title'] . '\nStarting time: ' . $start_time . '\nClient Name: ' . $postData['customer_fullname'] . '\nClient Email: ' . $postData['customer_email'] . '\n\nInstructions:\n\nYou will need to log in to our system to initiate the meeting. Please allow sufficient time to go through the login process before the session starts. We strongly recommend using the Chrome browser for the best video quality.\n\nIf you are experiencing some granularity in the initial images, allow a 1-2 minutes for the connection to stabilise. Also please be aware that the virtual room will close automatically at the session end time. A countdown timer is visible to assist you and the client to bring the session to a timely end before the virtual room closes.\n\n' . home_url( '/room/start/?s=' ) . $result->name;
+			$description_start = 'Hello,\n\nYour session with client ' . $postData['customer_fullname'] . ' ( ' . $postData['customer_email'] . ' ) has been re-scheduled. Please find below the session details and the link to open the virtual room at the booked time.\n\nService: ' . $postData['service_title'] . '\nStarting time: ' . $start_time . '\nClient Name: ' . $postData['customer_fullname'] . '\nClient Email: ' . $postData['customer_email'] . '\n\nInstructions:\n\nYou will need to log in to our system to initiate the meeting. Please allow sufficient time to go through the login process before the session starts. We strongly recommend using the Chrome browser for the best video quality.\n\nIf you are experiencing some granularity in the initial images, allow a 1-2 minutes for the connection to stabilise. Also please be aware that the virtual room will close automatically at the session end time. A countdown timer is visible to assist you and the client to bring the session to a timely end before the virtual room closes.\n\n' . home_url( '/room/start/?s=' ) . $name;
 		}
 
 		$author_ics = array(
-			'location'    => home_url( '/room/start/?s=' ) . $result->name,
+			'location'    => home_url( '/room/start/?s=' ) . $name,
 			'description' => $description_start,
 			'dtstart'     => dpen_daily_co_convert_timezone( array(
 				'date'      => $start_time,
@@ -168,5 +169,44 @@ class Email {
 		$email_tpl = ! $reschedule ? 'tpl-email-start' : 'tpl-email-start-updated';
 
 		self::prepareEmail( $email_tpl, $email_data, "Online Consultation | Headroom", $postData['staff_email'], $author_ics );
+	}
+
+	/**
+	 * Send out email on cancellation
+	 *
+	 * @param  array  $args
+	 *
+	 * @return void
+	 */
+	public static function cancelAppointment( array $args = array() ) {
+		$timezone = ! empty( $args['timezone'] ) ? $args['timezone'] : self::$defaultTimezone;
+
+		$client_email_data = array(
+			dpen_daily_co_convert_timezone( array(
+				'date'     => $args['start_time'],
+				'timezone' => $timezone,
+			), 'd/m/Y h:i a' ),
+			$args['service_title'],
+			false,
+			false,
+			false,
+			$args['staff_name']
+		);
+
+		self::prepareEmail( 'tpl-email-cancelled-client', $client_email_data, "Online Consultation | Headroom", $args['customer_email'] );
+
+		//Send Cancellation to Therapist
+		$therapist_email_data = array(
+			dpen_daily_co_convert_timezone( array(
+				'date'     => $args['start_time'],
+				'timezone' => self::$defaultTimezone,
+			), 'd/m/Y h:i a' ),
+			$args['service_title'],
+			false,
+			$args['customer_name'],
+			$args['customer_email']
+		);
+
+		self::prepareEmail( 'tpl-email-cancelled-therapist', $therapist_email_data, "Online Consultation | Headroom", $args['staff_email'] );
 	}
 }
