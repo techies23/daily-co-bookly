@@ -43,10 +43,10 @@ class Meetings {
 				dpen_clear_room_cache();
 
 				//Send to client
-				dpen_daily_co_send_ics_mail_to_client( $postData, $result, $invoice, $reschedule );
+				Email::clientEmail( $postData, $result, $invoice, $reschedule );
 
 				//Send to therapist
-				dpen_daily_co_send_ics_mail_to_therapist( $postData, $result, $reschedule );
+				Email::therapistEmail( $postData, $result, $reschedule );
 			}
 		}
 	}

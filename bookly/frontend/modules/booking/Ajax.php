@@ -162,7 +162,7 @@ class DailyCo_Bookly_Booking_Ajax extends Lib\Base\Ajax {
 				home_url( '/room/join/?j=' ) . $result->name . '&id=' . get_current_user_id()
 			);
 
-			dpen_daily_co_prepare_email( 'tpl-email-invite', $email_data, "Online Session | Headroom", $postData['customer_email'] );
+			\Headroom\Dailyco\DailyIntegration\Email::prepareEmail( 'tpl-email-invite', $email_data, "Online Session | Headroom", $postData['customer_email'] );
 
 			//Send email to Staff
 			$email_data = array(
@@ -173,7 +173,7 @@ class DailyCo_Bookly_Booking_Ajax extends Lib\Base\Ajax {
 				$order->getCustomer()->getEmail()
 			);
 
-			dpen_daily_co_prepare_email( 'tpl-email-start', $email_data, "Online Session | Headroom", $postData['staff_email'] );
+			\Headroom\Dailyco\DailyIntegration\Email::prepareEmail( 'tpl-email-start', $email_data, "Online Session | Headroom", $postData['staff_email'] );
 		}
 	}
 }

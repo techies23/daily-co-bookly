@@ -39,7 +39,6 @@ class Daily_Co_Bookly_Init {
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-fake-page.php';
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-shortcodes.php';
 //		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-shortcodes-um.php';
-		require DPEN_DAILY_CO_DIR_PATH . 'includes/ICS.php';
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/class-daily-co-bookly-api-helper.php';
 		require DPEN_DAILY_CO_DIR_PATH . 'includes/hooks.php';
 
