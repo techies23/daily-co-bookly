@@ -38,9 +38,6 @@ class Meetings {
 				dailyco_api()->update_room( $submit, $name );
 			}
 
-			$result       = new \StdClass();
-			$result->name = 'Test';
-
 			if ( ! empty( $result ) ) {
 				//Reset Cache
 				dpen_clear_room_cache();
