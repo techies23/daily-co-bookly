@@ -11,10 +11,14 @@ class Email {
 		$from       = ! empty( $from_email ) ? $from_email : 'no-reply@headroom.co.za';
 
 		//Ready for email
-		$headers[]      = 'Content-Type: text/html; charset=UTF-8';
-		$headers[]      = 'From: ' . get_bloginfo( 'name' ) . ' < ' . $from . ' >' . "\r\n";
-		$email_template = file_get_contents( DPEN_DAILY_CO_DIR_PATH . 'templates/emails/' . $template_name . '.html' );
+		$headers[]           = 'Content-Type: text/html; charset=UTF-8';
+		$headers[]           = 'From: ' . get_bloginfo( 'name' ) . ' < ' . $from . ' >' . "\r\n";
+		$email_template_path = DPEN_DAILY_CO_DIR_PATH . 'templates/emails/' . $template_name . '.html';
+		if ( ! file_exists( $email_template_path ) ) {
+			return;
+		}
 
+		$email_template = file_get_contents( $email_template_path );
 		$search_strings = array(
 			'{site_title}',
 			'{site_url}',
@@ -38,22 +42,29 @@ class Email {
 		$final_strings = array_merge( $replace_string, $data );
 		$body          = str_replace( $search_strings, $final_strings, $email_template );
 		if ( $ics ) {
-			$attach_ics = new CalendarICS( $ics );
-			$uploads    = wp_upload_dir();
-			$basedir    = $uploads['basedir'];
-			$upload_dir = $basedir . '/webmeeting';
+			$upload_dir = wp_upload_dir()['basedir'] . '/webmeeting';
 			if ( ! is_dir( $upload_dir ) ) {
-				mkdir( $upload_dir, 0700 );
+				mkdir( $upload_dir, 0700, true );
 			}
 
-			$file_path = $upload_dir . '/meeting.ics';
+			// Create the calendar file
+			$file_path  = $upload_dir . '/meeting.ics';
+			$attach_ics = new CalendarICS( $ics );
 			file_put_contents( $file_path, $attach_ics->to_string() );
+
+			// If the file exists, attach it to the email
+			$attachments = [];
 			if ( file_exists( $file_path ) ) {
-				$attachments = array( $file_path );
+				$attachments[] = $file_path;
 			}
-			$attachments = ! empty( $attachments ) ? $attachments : false;
+
+			// Send email with attachment
 			wp_mail( $email, $subject, $body, $headers, $attachments );
-			wp_delete_file( $file_path );
+
+			// Delete the file after sending the email
+			if ( file_exists( $file_path ) ) {
+				wp_delete_file( $file_path );
+			}
 		} else {
 			wp_mail( $email, $subject, $body, $headers );
 		}
@@ -78,12 +89,14 @@ class Email {
 		$start_time = dpen_daily_co_convert_timezone( array(
 			'date'     => $postData['start_date'],
 			'timezone' => $timezone,
-		), 'd/m/Y h:i a' );
+			'timestamp' => true
+		), 'Y-m-d h:i a' );
 
 		$end_time = dpen_daily_co_convert_timezone( array(
 			'date'     => $postData['end_date'],
 			'timezone' => $timezone,
-		), 'd/m/Y h:i a' );
+			'timestamp' => true
+		), 'Y-m-d h:i a' );
 
 		$email_data = array(
 			$start_time,
@@ -131,7 +144,11 @@ class Email {
 	public static function therapistEmail( $postData, $result, bool $reschedule = false ) {
 		//Send email to Staff
 		$apt_notes  = ! empty( $postData['appointment_notes'] ) ? $postData['appointment_notes'] : 'N/A';
-		$start_time = $postData['start_date'];
+		$start_time = dpen_daily_co_convert_timezone( array(
+			'date'      => $postData['start_date'],
+			'timezone'  => self::$defaultTimezone,
+			'timestamp' => true
+		), 'Y-m-d h:i a' );
 		$name       = ! empty( $result->name ) ? $result->name : 'Online Appointment';
 
 		$email_data = array(
@@ -152,11 +169,7 @@ class Email {
 		$author_ics = array(
 			'location'    => home_url( '/room/start/?s=' ) . $name,
 			'description' => $description_start,
-			'dtstart'     => dpen_daily_co_convert_timezone( array(
-				'date'      => $start_time,
-				'timezone'  => self::$defaultTimezone,
-				'timestamp' => true
-			), 'Y-m-d h:i a' ),
+			'dtstart'     => $start_time,
 			'dtend'       => dpen_daily_co_convert_timezone( array(
 				'date'      => $postData['end_date'],
 				'timezone'  => self::$defaultTimezone,
@@ -185,7 +198,8 @@ class Email {
 			dpen_daily_co_convert_timezone( array(
 				'date'     => $args['start_time'],
 				'timezone' => $timezone,
-			), 'd/m/Y h:i a' ),
+				'timestamp' => true
+			), 'Y-m-d h:i a' ),
 			$args['service_title'],
 			false,
 			false,
@@ -200,7 +214,7 @@ class Email {
 			dpen_daily_co_convert_timezone( array(
 				'date'     => $args['start_time'],
 				'timezone' => self::$defaultTimezone,
-			), 'd/m/Y h:i a' ),
+			), 'Y-m-d h:i a' ),
 			$args['service_title'],
 			false,
 			$args['customer_name'],

@@ -6,8 +6,8 @@ class CalendarICS {
 
 	const DT_FORMAT = 'Ymd\THis';
 
-	protected array $properties = [];
-	private array $available_properties = [
+	protected array $properties = array();
+	private array $available_properties = array(
 		'description',
 		'dtend',
 		'dtstart',
@@ -16,7 +16,7 @@ class CalendarICS {
 		'organizer',
 		'url',
 		'tzid'
-	];
+	);
 
 	public function __construct( $props ) {
 		$this->set( $props );
@@ -91,7 +91,7 @@ class CalendarICS {
 		return $val;
 	}
 
-	private function format_timestamp( $timestamp ): string {
+	private function format_timestamp( $timestamp ) {
 		$dt = new \DateTime( $timestamp );
 
 		return $dt->format( self::DT_FORMAT );
